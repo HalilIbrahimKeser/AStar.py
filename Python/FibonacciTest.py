@@ -1,21 +1,21 @@
-
 import math
 
 
-def isPerfectSquare(x):
-    s = int(math.sqrt(x))
-    return s * s == x
+class NewInt1(int):
+
+    def __init__(self):
+        self.int_list = list(range(0, 100000))
+
+    def isPerfectSquare(self, x):
+        s = int(math.sqrt(x))
+        return s * s == x
+
+    def is_fibonacci(self, n):
+        return self.isPerfectSquare(5 * n * n + 4) or self.isPerfectSquare(5 * n * n - 4)
 
 
-def isFibonacci(n):
-    # n is Fibinacci if one of 5*n*n + 4 or 5*n*n - 4 or both
-    # is a perferct square
-    return isPerfectSquare(5 * n * n + 4) or isPerfectSquare(5 * n * n - 4)
+newClass = NewInt1()
 
-
-# A utility function to test above functions
-for i in range(1, 11):
-    if (isFibonacci(i) == True):
-        print (i, "is a Fibonacci Number")
-    else:
-        print (i, "is a not Fibonacci Number ")
+new_set = range(0, 100000)
+#fib_set = {int for int in NewInt1.is_fibonacci(int)}
+comprehension_List = [int for int in newClass.int_list if new_set(int)]
