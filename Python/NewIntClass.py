@@ -17,5 +17,7 @@ newClass = NewInt()
 fibonacci_list = [int for int in newClass.my_list if newClass.is_fibonacci(int)]
 print(fibonacci_list)
 
-#beregning hentet fra: https://www.geeksforgeeks.org/python-program-for-how-to-check-if-a-given-number-is-fibonacci-number/
-#list comprehensions: https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
+#beregning hentet fra:
+# https://www.geeksforgeeks.org/python-program-for-how-to-check-if-a-given-number-is-fibonacci-number/
+#list comprehensions:
+# https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
