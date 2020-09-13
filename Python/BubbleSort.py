@@ -8,12 +8,12 @@ bubble_sorted_list = []
 
 
 def random_string(length=5):
-    consonants = "bcdfghjklmnpqrstvwxyz"
+    consonants = "abcdefghjklmnpqrstvwxyz"
     vowels = "aeiouæøå"
     return "".join(random.choice((consonants, vowels)[i % 2]) for i in range(length))
 
 
-string_list = [random_string(3) for i in range(30)]
+string_list = [random_string(4) for i in range(1000)]
 
 print(string_list)
 
