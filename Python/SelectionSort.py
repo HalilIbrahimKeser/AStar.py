@@ -1,20 +1,20 @@
 import random
 import timeit
 
-start1 = timeit.timeit()
+start_time = timeit.default_timer()
 
 selection_sorted_list = []
 
 
 def random_string(length=5):
-    consonants = "abcdfghjklmnpqrstvwxyz"
+    consonants = "abcdefghjklmnpqrstvwxyz"
     vowels = "aeiouæøå"
     return "".join(random.choice((consonants, vowels)[i % 2]) for i in range(length))
 
 
 string_list = [random_string(4) for i in range(10000)]
-
-print(string_list)
+print("\nUnsorted array is : ")
+print(*string_list)
 
 
 def selection_sort(string_list, size):
@@ -34,8 +34,7 @@ for i in range(len(string_list)):
     selection_sorted_list.append(string_list[i])
 
 print("Sorted array is:")
-print(selection_sorted_list)
+print(*selection_sorted_list)
 
-end = timeit.timeit()
-print('\n', (end - start1) * 1000, 'milliseconds')
+print("The time difference is :", timeit.default_timer() - start_time)
 
