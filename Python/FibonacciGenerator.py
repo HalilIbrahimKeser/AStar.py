@@ -1,3 +1,6 @@
+import timeit
+
+
 def fib(max):
     a, b = 0, 1
     while a < max:
@@ -5,4 +8,4 @@ def fib(max):
         a, b = b, a + b
 
 
-print(list(fib(1000)))
+timeit.timeit(print(list(fib(1000000))))
