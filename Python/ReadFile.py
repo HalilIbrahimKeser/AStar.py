@@ -1,18 +1,33 @@
 from collections import namedtuple
 
-data = {}
-personer = namedtuple('personer', ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed'])
+"""Lager tuples med personer fra filen"""
+final_list = []
+personer_list = namedtuple('personer', ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed'])
 
 try:
-    with open("personer.dta") as file:
+    with open("personer.dta", "r") as file:
         for lines in file:
-            data = [lines.strip().split(';')]
-            personer = personer._make(data[0])
+            data = lines.strip().split(';')
+            personer = personer_list(etternavn=data[0], fornavn=data[1], adresse=data[2],
+                                     postnummer=data[3], poststed=data[4])
+            final_list.append(personer)
 except FileNotFoundError as err:
     print(err)
 
-print(data, '\n')
-print(personer, '\n')
-print(lines)
+
+print('\n', final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n', final_list[-2], '\n', final_list[-1], '\n')
+
+
+
+"""Telle antall forekomster av postnummer"""
+
+"""
+iterable_liste = set(final_list.pop(personer.postnummer))
+print(iterable_liste)
+"""
+
+
+
+
 
 file.close()
