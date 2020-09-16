@@ -21,9 +21,7 @@ print('\n', final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n', fi
       '\n')
 
 """Telle antall forekomster av postnummer"""
-postnummer_list = set([x.postnummer for x in final_list])
+postnummer_list = set([personer.postnummer for personer in final_list])
 
 print(len(postnummer_list))
 
-iterable_liste = set(final_list.pop(personer.postnummer))
-print(iterable_liste)
