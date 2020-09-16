@@ -13,6 +13,8 @@ try:
             final_list.append(personer)
 except FileNotFoundError as err:
     print(err)
+finally:
+    file.close()
 
 print('\n', final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n', final_list[-2], '\n', final_list[-1],
       '\n')
@@ -23,5 +25,3 @@ print('\n', final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n', fi
 iterable_liste = set(final_list.pop(personer.postnummer))
 print(iterable_liste)
 """
-
-file.close()
