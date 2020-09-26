@@ -16,7 +16,7 @@ except FileNotFoundError as err:
 finally:
     file.close()
 
-"""fem siste"""
+"""Fem siste på en fin utksrift. Kunne brukt final_list[-5:]"""
 print('\n', final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n', final_list[-2], '\n', final_list[-1],
       '\n')
 
