@@ -31,49 +31,72 @@ print(len(postnummer_list), "\n")
 etternavn_list = Counter([personer.etternavn for personer in final_list])
 print(*etternavn_list.most_common(10))
 
-
 # 4: Implementer sorteringsalgoritmen Heap Sort og sorter listen "persons" utfra rekkefølgen radene er lest inn i.
-# Ferdig implementerte funksjoner som sorted skal ikke benyttes.
 # Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen.
-def heapify(arr, n, i):
-    largest = i  # Initialize largest as root
-    left = 2 * i + 1  # left = 2*i + 1
-    right = 2 * i + 2  # right = 2*i + 2
-
-    # See if left child of root exists and is
-    # greater than root
-    if left < n and arr[i] < arr[left]:
-        largest = left
-
-        # See if right child of root exists and is
-    # greater than root
-    if right < n and arr[largest] < arr[right]:
-        largest = right
-
-        # Change root, if needed
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]  # swap
-
-        # Heapify the root.
-        heapify(arr, n, largest)
+x = -1
+heap = [0] * 1000
 
 
-def heapSort(arr):
+def heapForm(k):
+    global x
+    x += 1
+    heap[x] = k
+    child = x
+    index = x // 2
+
+    while index >= 0:
+        if heap[index] > heap[child]:
+            tmp = heap[index]
+            heap[index] = heap[child]
+            heap[child] = tmp
+            child = index
+            index = index // 2
+        else:
+            break
+
+
+def heapSort():
+    global x
+    while x >= 0:
+        k = heap[0]
+        print(k, end=" ")
+        heap[0] = heap[x]
+        x = x - 1
+        tmp = -1
+        index = 0
+        length = x
+        left1 = 1
+        right1 = left1 + 1
+
+        while left1 <= length:
+            if (heap[index] <= heap[left1] and
+                    heap[index] <= heap[right1]):
+                break
+            else:
+                if heap[left1] < heap[right1]:
+                    tmp = heap[index]
+                    heap[index] = heap[left1]
+                    heap[left1] = tmp
+                    index = left1
+                else:
+                    tmp = heap[index]
+                    heap[index] = heap[right1]
+                    heap[right1] = tmp
+                    index = right1
+
+            left1 = 2 * left1
+            right1 = left1 + 1
+
+
+def sort(k, n):
+    for i in range(n):
+        heapForm(k[i])
+    heapSort()
+
+
+if __name__ == '__main__':
+    arr = ["banana", "zorange", "apple",
+           "pineapple", "berries", "lichi"]
     n = len(arr)
-
-    # Build a maxheap.
-    # Since last parent will be at ((n//2)-1) we can start at that location.
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-        # One by one extract elements
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]  # swap
-        heapify(arr, i, 0)
-
-#-------------------------------------Søk etter heapsort geek lexiograpic
-personer = [personer.etternavn for personer in personer_list]
-heapSort(personer)
-n = len(personer)
-for i in range(n):
-    print(personer[i])
+    sort(arr, n)
+    print("\n", arr)
