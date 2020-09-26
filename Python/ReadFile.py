@@ -43,7 +43,7 @@ def heapForm(k):
     heap[x] = k
     child = x
     index = x // 2
-
+    # Iterative heapiFy
     while index >= 0:
         if heap[index] > heap[child]:
             tmp = heap[index]
@@ -51,6 +51,7 @@ def heapForm(k):
             heap[child] = tmp
             child = index
             index = index // 2
+
         else:
             break
 
@@ -83,7 +84,6 @@ def heapSort():
                     heap[index] = heap[right1]
                     heap[right1] = tmp
                     index = right1
-
             left1 = 2 * left1
             right1 = left1 + 1
 
@@ -95,7 +95,6 @@ def sort(k, n):
 
 
 if __name__ == '__main__':
-    arr = ["pinaple", "banana", "orange", "apple", "pineapple", "berries", "lichi", "zuchini"]
+    arr = ["banana", "orange", "apple", "pineapple", "berries", "lichi"]
     n = len(arr)
     sort(arr, n)
-    print("\n", arr)
