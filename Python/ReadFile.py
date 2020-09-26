@@ -95,8 +95,7 @@ def sort(k, n):
 
 
 if __name__ == '__main__':
-    arr = ["banana", "zorange", "apple",
-           "pineapple", "berries", "lichi"]
+    arr = ["pinaple", "banana", "orange", "apple", "pineapple", "berries", "lichi", "zuchini"]
     n = len(arr)
     sort(arr, n)
     print("\n", arr)
