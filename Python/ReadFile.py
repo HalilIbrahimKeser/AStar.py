@@ -31,6 +31,8 @@ print(*etternavn_list.most_common(10), "\n")
 # 4: Implementer sorteringsalgoritmen Heap Sort og sorter listen "persons" utfra rekkefølgen radene er lest inn i.
 x = -1
 heap = [0] * 100000
+heap_list = list(personer.etternavn for personer in final_list)
+sorted_list = list()
 
 
 def heapForm(k):
@@ -46,7 +48,6 @@ def heapForm(k):
             heap[child] = tmp
             child = index
             index = index // 2
-
         else:
             break
 
@@ -55,7 +56,7 @@ def heapSort():
     global x
     while x >= 0:
         k = heap[0]
-        print(k, end=" ")
+        sorted_list.append(k)
         heap[0] = heap[x]
         x = x - 1
         tmp = -1
@@ -84,26 +85,21 @@ def heapSort():
 
 
 def sort(k):
-    for i in range(100000):
+    for i in range(len(heap_list)):
         heapForm(k[i])
     heapSort()
 
 
 if __name__ == '__main__':
-
-    heap_list = list()
-    personer_list1 = list()
-    try:
-        with open("personer.dta", "r") as file:
-            for lines in file:
-                heap_list.append(lines)
-    except FileNotFoundError as err:
-        print(err)
-    finally:
-        file.close()
-
-    #heap_list = [list(personer for personer in final_list)]
-
     sort(heap_list)
 
 # Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen.
+# print(sorted_list.__getitem__(0), sorted_list.__getitem__(20000), sorted_list.__getitem__(40000),
+#      sorted_list.__getitem__(60000), sorted_list.__getitem__(80000))
+print(sorted_list.__getitem__(0), sorted_list.__getitem__(5000), sorted_list.__getitem__(10000),
+      sorted_list.__getitem__(15000), sorted_list.__getitem__(20000), sorted_list.__getitem__(25000),
+      sorted_list.__getitem__(30000), sorted_list.__getitem__(35000), sorted_list.__getitem__(40000),
+      sorted_list.__getitem__(45000), sorted_list.__getitem__(50000), sorted_list.__getitem__(55000),
+      sorted_list.__getitem__(60000), sorted_list.__getitem__(65000), sorted_list.__getitem__(70000),
+      sorted_list.__getitem__(75000), sorted_list.__getitem__(80000), sorted_list.__getitem__(85000),
+      sorted_list.__getitem__(90000), sorted_list.__getitem__(95000), sorted_list.__getitem__(99999))
