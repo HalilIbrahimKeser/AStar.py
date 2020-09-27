@@ -6,9 +6,9 @@ final_list = []
 personer_list = namedtuple('personer', ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed'])
 
 try:
-    with open("personer.dta", "r") as file:
+    with open("personer.dta", "r", encoding='latin1') as file:
         for lines in file:
-            data = lines.strip().split(';')
+            data = lines.strip("\n").split(';')
             personer = personer_list(etternavn=data[0], fornavn=data[1], adresse=data[2],
                                      postnummer=data[3], poststed=data[4])
             final_list.append(personer)
@@ -18,8 +18,8 @@ finally:
     file.close()
 
 # Fem siste på en fin utksrift. Kunne brukt final_list[-5:]
-print('\n', final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n', final_list[-2], '\n', final_list[-1],
-      '\n')
+print(final_list[-5], '\n', final_list[-4], '\n', final_list[-3], '\n',
+      final_list[-2], '\n', final_list[-1], '\n')
 
 # 2:
 postnummer_list = set([personer.postnummer for personer in final_list])
@@ -30,6 +30,7 @@ etternavn_list = Counter([personer.etternavn for personer in final_list])
 print(*etternavn_list.most_common(10), "\n")
 
 # 4:
+# -----------------------------------------------------------------------
 # Funskjon 1, den sorterer ikke fult ut av en eller annen grunn
 x = -1
 heap = [0] * 100000
@@ -58,7 +59,6 @@ def heapSort():
     global x
     while x >= 0:
         k = heap[0]
-        sorted_list.append(k)
         heap[0] = heap[x]
         x = x - 1
         tmp = -1
@@ -66,6 +66,7 @@ def heapSort():
         length = x
         left1 = 1
         right1 = left1 + 1
+        sorted_list.append(k)
 
         while left1 <= length:
             if (heap[index] <= heap[left1] and
@@ -94,11 +95,11 @@ def sort(k):
 
 if __name__ == '__main__':
     sort(heap_list)
-
 print("Funksjon 1:")
-print(sorted_list.__getitem__(0), sorted_list.__getitem__(20000), sorted_list.__getitem__(40000),
-      sorted_list.__getitem__(60000), sorted_list.__getitem__(80000))
+print(sorted_list[0], sorted_list[20000], sorted_list[40000], sorted_list[60000], sorted_list[80000])
 
+
+# ----------------------------------------------------
 
 # Funskjon 2, den sorterer riktig
 def heap_sort(array):
@@ -114,7 +115,7 @@ def heap_sort(array):
     return ordered
 
 
-sortedList = heap_sort(heap_list)
+sorted_list2 = heap_sort(heap_list)
 print("Funksjon 2:")
-print(sortedList.__getitem__(0), sortedList.__getitem__(20000), sortedList.__getitem__(40000),
-      sortedList.__getitem__(60000), sortedList.__getitem__(80000))
+print(sorted_list2[0], sorted_list2[20000], sorted_list2[40000], sorted_list2[60000], sorted_list2[80000])
+# ----------------------------------------------------
