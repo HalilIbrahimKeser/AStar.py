@@ -76,10 +76,5 @@ if __name__ == '__main__':
 
     sort(heap_list_etternavn)
 
-    print(sorted_list.__getitem__(0), sorted_list.__getitem__(5000), sorted_list.__getitem__(10000),
-      sorted_list.__getitem__(15000), sorted_list.__getitem__(20000), sorted_list.__getitem__(25000),
-      sorted_list.__getitem__(30000), sorted_list.__getitem__(35000), sorted_list.__getitem__(40000),
-      sorted_list.__getitem__(45000), sorted_list.__getitem__(50000), sorted_list.__getitem__(55000),
-      sorted_list.__getitem__(60000), sorted_list.__getitem__(65000), sorted_list.__getitem__(70000),
-      sorted_list.__getitem__(75000), sorted_list.__getitem__(80000), sorted_list.__getitem__(85000),
-      sorted_list.__getitem__(90000), sorted_list.__getitem__(95000), sorted_list.__getitem__(99999))
+    print(sorted_list.__getitem__(0), sorted_list.__getitem__(20000), sorted_list.__getitem__(40000),
+          sorted_list.__getitem__(60000), sorted_list.__getitem__(80000))

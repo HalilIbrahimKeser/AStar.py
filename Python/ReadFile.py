@@ -1,5 +1,6 @@
 # 1:
 from collections import namedtuple, Counter
+from heapq import heappop, heappush
 
 final_list = []
 personer_list = namedtuple('personer', ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed'])
@@ -28,7 +29,8 @@ print(len(postnummer_list), "\n")
 etternavn_list = Counter([personer.etternavn for personer in final_list])
 print(*etternavn_list.most_common(10), "\n")
 
-# 4: Implementer sorteringsalgoritmen Heap Sort og sorter listen "persons" utfra rekkefølgen radene er lest inn i.
+# 4:
+# Funskjon 1, den sorterer ikke fult ut av en eller annen grunn
 x = -1
 heap = [0] * 100000
 heap_list = list(personer.etternavn for personer in final_list)
@@ -93,13 +95,26 @@ def sort(k):
 if __name__ == '__main__':
     sort(heap_list)
 
-# Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen.
-# print(sorted_list.__getitem__(0), sorted_list.__getitem__(20000), sorted_list.__getitem__(40000),
-#      sorted_list.__getitem__(60000), sorted_list.__getitem__(80000))
-print(sorted_list.__getitem__(0), sorted_list.__getitem__(5000), sorted_list.__getitem__(10000),
-      sorted_list.__getitem__(15000), sorted_list.__getitem__(20000), sorted_list.__getitem__(25000),
-      sorted_list.__getitem__(30000), sorted_list.__getitem__(35000), sorted_list.__getitem__(40000),
-      sorted_list.__getitem__(45000), sorted_list.__getitem__(50000), sorted_list.__getitem__(55000),
-      sorted_list.__getitem__(60000), sorted_list.__getitem__(65000), sorted_list.__getitem__(70000),
-      sorted_list.__getitem__(75000), sorted_list.__getitem__(80000), sorted_list.__getitem__(85000),
-      sorted_list.__getitem__(90000), sorted_list.__getitem__(95000), sorted_list.__getitem__(99999))
+print("Funksjon 1:")
+print(sorted_list.__getitem__(0), sorted_list.__getitem__(20000), sorted_list.__getitem__(40000),
+      sorted_list.__getitem__(60000), sorted_list.__getitem__(80000))
+
+
+# Funskjon 2, den sorterer riktig
+def heap_sort(array):
+    heap = []
+    for element in array:
+        heappush(heap, element)
+
+    ordered = []
+
+    while heap:
+        ordered.append(heappop(heap))
+
+    return ordered
+
+
+sortedList = heap_sort(heap_list)
+print("Funksjon 2:")
+print(sortedList.__getitem__(0), sortedList.__getitem__(20000), sortedList.__getitem__(40000),
+      sortedList.__getitem__(60000), sortedList.__getitem__(80000))
