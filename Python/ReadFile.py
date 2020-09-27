@@ -103,14 +103,14 @@ print(sorted_list[0], sorted_list[20000], sorted_list[40000], sorted_list[60000]
 
 # Funskjon 2, den sorterer riktig
 def heap_sort(array):
-    heap = []
+    heap1 = []
     for element in array:
-        heappush(heap, element)
+        heappush(heap1, element)
 
     ordered = []
 
-    while heap:
-        ordered.append(heappop(heap))
+    while heap1:
+        ordered.append(heappop(heap1))
 
     return ordered
 
