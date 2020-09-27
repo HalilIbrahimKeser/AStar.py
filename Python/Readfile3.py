@@ -50,5 +50,5 @@ file.close()
 
 """
 4: Implementer sorteringsalgoritmen Heap Sort og sorter listen "persons" utfra rekkefølgen radene er lest inn i. 
-Ferdig implementerte funksjoner som sorted skal ikke benyttes. 
+Ferdig implementerte funksjoner som sorted_list skal ikke benyttes. 
 Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen."""

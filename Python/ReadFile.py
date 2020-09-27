@@ -1,6 +1,4 @@
-# 1: Legg hver rad inn i en passende datastruktur,
-# feks. tuple, dict, list eller namedtuple. Skriv så ut de 5 siste radene i en celle.
-# Lager tuples med personer fra filen
+# 1:
 from collections import namedtuple, Counter
 
 final_list = []
@@ -22,19 +20,17 @@ finally:
 print('\n', *final_list[-5], '\n', *final_list[-4], '\n', *final_list[-3], '\n', *final_list[-2], '\n', *final_list[-1],
       '\n')
 
-# 2: Hvor mange unike postnummer finnes i "Personer.dta"?
-# Telle antall forekomster av postnummer
+# 2:
 postnummer_list = set([personer.postnummer for personer in final_list])
 print(len(postnummer_list), "\n")
 
-# 3: Hva er de 10 vanligste etternavnene (som forekommer flest ganger) i "Personer.dta"?
+# 3:
 etternavn_list = Counter([personer.etternavn for personer in final_list])
-print(*etternavn_list.most_common(10))
+print(*etternavn_list.most_common(10), "\n")
 
 # 4: Implementer sorteringsalgoritmen Heap Sort og sorter listen "persons" utfra rekkefølgen radene er lest inn i.
-# Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen.
 x = -1
-heap = [0] * 1000
+heap = [0] * 100000
 
 
 def heapForm(k):
@@ -43,7 +39,6 @@ def heapForm(k):
     heap[x] = k
     child = x
     index = x // 2
-    # Iterative heapiFy
     while index >= 0:
         if heap[index] > heap[child]:
             tmp = heap[index]
@@ -95,6 +90,21 @@ def sort(k, n):
 
 
 if __name__ == '__main__':
-    arr = ["banana", "orange", "apple", "pineapple", "berries", "lichi"]
-    n = len(arr)
-    sort(arr, n)
+    heap_list = []
+    personer_list1 = list([])
+    try:
+        with open("personer.dta", "r") as file:
+            for lines in file:
+                data = lines.strip().split(';')
+                heap_list.append(data)
+    except FileNotFoundError as err:
+        print(err)
+    finally:
+        file.close()
+
+    heap_list_etternavn = list(personer for personer in heap_list)
+
+    sort(heap_list_etternavn, len(heap_list_etternavn))
+
+
+# Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen.

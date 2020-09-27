@@ -44,7 +44,7 @@ def merge_sort(values):
 
 merge_sorted_list = merge_sort(string_list2)
 
-print("\nMerge sorted array is alternative 2: ")
+print("\nMerge sorted_list array is alternative 2: ")
 print(*merge_sorted_list)
 
 print("The time difference is :", timeit.default_timer() - start_time)
@@ -84,7 +84,7 @@ def merge_sort_2(arr):
 
 merge_sorted_list1 = merge_sort_2(string_list2)
 
-print("\nMerge sorted array is alternative 1: ")
+print("\nMerge sorted_list array is alternative 1: ")
 print(*merge_sorted_list1)
 
 print("The time difference is :", timeit.default_timer() - start_time_2)
