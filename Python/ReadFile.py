@@ -83,28 +83,27 @@ def heapSort():
             right1 = left1 + 1
 
 
-def sort(k, n):
-    for i in range(n):
+def sort(k):
+    for i in range(100000):
         heapForm(k[i])
     heapSort()
 
 
 if __name__ == '__main__':
-    heap_list = []
-    personer_list1 = list([])
+
+    heap_list = list()
+    personer_list1 = list()
     try:
         with open("personer.dta", "r") as file:
             for lines in file:
-                data = lines.strip().split(';')
-                heap_list.append(data)
+                heap_list.append(lines)
     except FileNotFoundError as err:
         print(err)
     finally:
         file.close()
 
-    heap_list_etternavn = list(personer for personer in heap_list)
+    #heap_list = [list(personer for personer in final_list)]
 
-    sort(heap_list_etternavn, len(heap_list_etternavn))
-
+    sort(heap_list)
 
 # Skriv så ut indexene [0,20000,40000,60000,80000] fra den sorterte listen.
