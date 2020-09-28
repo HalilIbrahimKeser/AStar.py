@@ -59,11 +59,6 @@ class MyBinaryNode:
             return retval
 
 
-leftNode = MyBinaryNode('+', MyBinaryNode('a'), MyBinaryNode('b'))
-rightNode = MyBinaryNode('-', MyBinaryNode('a'), MyBinaryNode('b'))
-rootNode = MyBinaryNode('*', leftNode, rightNode)
-
-
 def prefixOrder(self):
     print(self, ' ', end='')
     if self.hasLeft():
@@ -111,14 +106,22 @@ def levelOrderEntry(self, queue):
         self.levelOrderEntry(queue)
 
 
-print("Please enter a prefix expression: ")
-node = MyBinaryNode()
-#node.value(input())
-#node.value("+")
-node.__init__("+", 4, 5)
-string = MyBinaryNode("+ + * 4 5 6 7")
+"""leftNode = MyBinaryNode('+', MyBinaryNode('a'), MyBinaryNode('b'))
+rightNode = MyBinaryNode('-', MyBinaryNode('a'), MyBinaryNode('b'))
+rootNode = MyBinaryNode('*', leftNode, rightNode)"""
+
+if __name__ == '__main__':
+    #  input("Please enter a prefix expression: ")
+    str1 = "Please enter a prefix expression: "
+    stringFromInput = ['+', '+', '*', '4', '5', '6', '7']
+
+    node = MyBinaryNode(value='', lefttree='', righttree='').__init__(stringFromInput)
+
+    for strings in stringFromInput:
+        node.value.setter(stringFromInput)
+
 
 print("The infix form is: ")
-print(infixOrder(node))
+print()
 print("The postfix form is: ")
-print(postfixOrder(node))
+print()

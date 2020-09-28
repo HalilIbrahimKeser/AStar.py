@@ -32,7 +32,8 @@ etternavn_list = Counter([personer.etternavn for personer in final_list])
 print(*etternavn_list.most_common(10), "\n")
 
 # 4:
-# Funskjon 1, den sorterer ikke fult ut av en eller annen grunn
+# Funskjon 1, den sorterer ikke fult ut av en eller annen grunn.
+# Leverte annen heapsort algorithme. Ikke denne
 x = -1
 heap = [0] * 100000
 sortedList1 = list()
