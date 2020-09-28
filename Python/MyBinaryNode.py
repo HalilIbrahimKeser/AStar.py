@@ -115,10 +115,10 @@ if __name__ == '__main__':
     str1 = "Please enter a prefix expression: "
     stringFromInput = ['+', '+', '*', '4', '5', '6', '7']
 
-    node = MyBinaryNode(value='', lefttree='', righttree='').__init__(stringFromInput)
+    node = MyBinaryNode(value='', lefttree='', righttree='')
 
     for strings in stringFromInput:
-        node.value.setter(stringFromInput)
+        node.value.setter(strings)
 
 
 print("The infix form is: ")
