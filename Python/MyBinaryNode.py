@@ -109,3 +109,16 @@ def levelOrderEntry(self, queue):
         queue.put(node.right)
     if node.hasLeft() or node.hasRight:
         self.levelOrderEntry(queue)
+
+
+print("Please enter a prefix expression: ")
+node = MyBinaryNode()
+#node.value(input())
+#node.value("+")
+node.__init__("+", 4, 5)
+string = MyBinaryNode("+ + * 4 5 6 7")
+
+print("The infix form is: ")
+print(infixOrder(node))
+print("The postfix form is: ")
+print(postfixOrder(node))
