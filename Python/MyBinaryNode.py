@@ -1,7 +1,10 @@
 from __future__ import division
 import random
 
+from distlib.compat import raw_input
 
+
+# KODE FRA LÆREREN. JEG SKJØNNER IKKE HVORDAN JEG SKAL GÅ FRAM. LAGE EN NODE OG LESE MIN STRENG INNI DEN?
 class MyBinaryNode:
     def __init__(self, value, lefttree=None, righttree=None):
         self.value = value
@@ -114,6 +117,8 @@ def levelOrderEntry(self, queue):
 rightNode = MyBinaryNode('-', MyBinaryNode('a'), MyBinaryNode('b'))
 rootNode = MyBinaryNode('*', leftNode, rightNode)"""
 # ----------------------------------------------------------------
+# KODE FRA INTERNET SOM FUNGERER
+
 OPERATORS = set(['+', '-', '*', '/', '(', ')'])
 PRIORITY = {'+': 1, '-': 1, '*': 2, '/': 2}
 
@@ -248,18 +253,16 @@ def evaluate_prefix(formula):
 
 # ----------------------------------------------------------------
 if __name__ == '__main__':
-    #  input("Please enter a prefix expression: ")
-    str1 = "Please enter a prefix expression: "
-    infixFromInput = ('+', '+', '*', '4', '5', '6', '7')
+    # prefixFromInput = str(raw_input("Please enter a prefix expression, comma separated: "))
+    prefixFromInput = ['+', '+', '*', '4', '5', '6', '7']
 
-    #node = MyBinaryNode(stringFromInput[0], MyBinaryNode(stringFromInput[1]), MyBinaryNode(stringFromInput[2]))
+    # disse fungerer på kode fra internett
+    infix = prefix_to_infix(prefixFromInput)
+    postfix = infix_to_postfix(infix)
 
-    #for strings in stringFromInput:
-    #    MyBinaryNode(strings[0])
+    print("The infix form is: ", prefix_to_infix(prefixFromInput))
+    print("The postfix form is: ", infix_to_postfix(prefix_to_infix(prefixFromInput)))
+    print("The result is: ", evaluate_prefix(prefixFromInput))
 
-    infix_to_prefix(infixFromInput)
-
-print("The infix form is: ")
-print()
-print("The postfix form is: ")
-print()
+    # disse fungerer ikke, kode fra lærer
+    print(prefixOrder(prefixFromInput))
