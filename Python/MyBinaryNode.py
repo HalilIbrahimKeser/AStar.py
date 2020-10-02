@@ -265,4 +265,4 @@ if __name__ == '__main__':
     print("The result is: ", evaluate_prefix(prefixFromInput))
 
     # disse fungerer ikke, kode fra lærer
-    print(prefixOrder(prefixFromInput))
+    #print(prefixOrder(prefixFromInput))
