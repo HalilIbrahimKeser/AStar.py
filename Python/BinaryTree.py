@@ -1,4 +1,7 @@
+from IPython.core.display import display
+
 from Python import BinaryTreeNode
+
 
 class BinaryTree:
     def __init__(self, data=None):
@@ -212,6 +215,9 @@ class BinaryTree:
         return dot
 
     def visualize(tree):
-        dot = dot_visualization(tree._root)
+        dot = tree.dot_visualization(tree._root)
         display(dot)
         # -------------------------------------
+
+
+
