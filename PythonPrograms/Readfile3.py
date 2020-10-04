@@ -1,7 +1,7 @@
 """
 1: Filen "Personer.dta" skal leses inn i en list persons.
 Filen inneholder 100 000 rader med fiktive personalia på formatet "etternavn;fornavn;adresse;postnummer;poststed".
-Dette skal gjøres i native Python, dvs. Numpy/Pandas eller andre libs skal ikke brukes.
+Dette skal gjøres i native PythonPrograms, dvs. Numpy/Pandas eller andre libs skal ikke brukes.
 
 """
 final_list = []

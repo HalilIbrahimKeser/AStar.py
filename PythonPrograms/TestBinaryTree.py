@@ -1,6 +1,6 @@
 import unittest
 from collections import namedtuple
-from Python import BinaryTree
+from PythonPrograms import BinaryTree
 
 if __name__ == "__main__":
     # import sys  sys.argv = ['', 'Test.testName']

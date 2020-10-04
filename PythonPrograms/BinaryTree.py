@@ -1,6 +1,4 @@
-from IPython.core.display import display
-
-from Python import BinaryTreeNode
+from PythonPrograms import BinaryTreeNode
 
 
 class BinaryTree:
@@ -185,7 +183,8 @@ class BinaryTree:
                 parent.right = node.left
         return delnode
 
-    # ------------------------------------- fra kunngjøring
+
+""" # ------------------------------------- fra kunngjøring
     def dot_visualization(g):
         from graphviz import Digraph, Source
 
@@ -218,6 +217,6 @@ class BinaryTree:
         dot = tree.dot_visualization(tree._root)
         display(dot)
         # -------------------------------------
-
+"""
 
 
