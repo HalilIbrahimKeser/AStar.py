@@ -1,4 +1,9 @@
-from PythonPrograms import BinaryTreeNode
+from graphviz import Digraph, Source
+from tensorboard.notebook import display
+
+from PythonPrograms.BinaryTreeNode import BinaryTreeNode
+
+from tensorflow.keras.utils import plot_model
 
 
 class BinaryTree:
@@ -9,7 +14,7 @@ class BinaryTree:
 
     def findLeftMost(self, treenode):
         left = treenode.left
-        if left == None:
+        if left is None:
             return treenode
         return self.findLeftMost(left)
 
@@ -18,7 +23,7 @@ class BinaryTree:
 
     def findRightMost(self, treenode):
         right = treenode.right
-        if right == None:
+        if right is None:
             return treenode
         return self.findRightMost(right)
 
@@ -26,9 +31,9 @@ class BinaryTree:
         return self.findRightMost(self._root)
 
     def find(self, key, treenode=None):
-        if treenode == None:
+        if treenode is None:
             treenode = self._root
-        if treenode == None:
+        if treenode is None:
             return None
         elif treenode.value > key:
             if treenode.left:
@@ -42,30 +47,30 @@ class BinaryTree:
             raise KeyError("Key not found")
 
     def _getnodes(self, current=None, treenode=None, value=None):
-        if current != None and treenode != None:
+        if current is not None and treenode is not None:
             return current, treenode
-        if value == None:
-            if treenode == None:
+        if value is None:
+            if treenode is None:
                 raise Exception("Attempt to insert an empty space into Binary Tree")
             else:
-                if treenode.value == None:
+                if treenode.value is None:
                     raise Exception("Attempt to insert an Node into Binary Tree with no key value")
         else:
-            if treenode != None:
-                if treenode.value != None:
+            if treenode is not None:
+                if treenode.value is not None:
                     raise Exception("Key inconsistency detected")
             else:
                 treenode = BinaryTreeNode(value)
-        if current == None:
+        if current is None:
             current = self._root
         return current, treenode
 
     def insert(self, current=None, treenode=None, value=None):
-        if current == None:
+        if current is None:
             current = self._root
         # Checking consistency ...
         current, treenode = self._getnodes(current, treenode, value)
-        if current != None:
+        if current is not None:
             if treenode.value < current.value:
                 if current.left is None:
                     current.left = treenode
@@ -77,7 +82,7 @@ class BinaryTree:
                 else:
                     self.insert(current.right, treenode)
             else:
-                if self._root == None:
+                if self._root is None:
                     self._root = treenode
                 else:
                     raise Exception("Duplicate key: " + treenode.value)
@@ -93,8 +98,8 @@ class BinaryTree:
             # If a left branch exists - find the smallest item
             current = parent.left
             if current:
-                if current.left == None:
-                    if current.right != None:
+                if current.left is None:
+                    if current.right is not None:
                         parent.left = current.right
                         return current
                     else:
@@ -113,8 +118,8 @@ class BinaryTree:
         parent = self._root
         while True:
             current = parent.right
-            if current.right == None:
-                if current.left != None:
+            if current.right is None:
+                if current.left is not None:
                     parent.right = current.left
                     return current
                 else:
@@ -183,10 +188,9 @@ class BinaryTree:
                 parent.right = node.left
         return delnode
 
+    # ------------------------------------- fra kunngjøring
 
-""" # ------------------------------------- fra kunngjøring
     def dot_visualization(g):
-        from graphviz import Digraph, Source
 
         def add_nodes_edges(tree, dot=None):
             # Create Digraph object
@@ -214,9 +218,8 @@ class BinaryTree:
         return dot
 
     def visualize(tree):
-        dot = tree.dot_visualization(tree._root)
+        dot = BinaryTree.dot_visualization(tree._root)
         display(dot)
         # -------------------------------------
-"""
 
 
