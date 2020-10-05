@@ -1,9 +1,5 @@
 from graphviz import Digraph, Source
-from tensorboard.notebook import display
-
 from PythonPrograms.BinaryTreeNode import BinaryTreeNode
-
-from tensorflow.keras.utils import plot_model
 
 
 class BinaryTree:
@@ -189,7 +185,7 @@ class BinaryTree:
         return delnode
 
     # ------------------------------------- fra kunngjøring
-
+    """
     def dot_visualization(g):
 
         def add_nodes_edges(tree, dot=None):
@@ -222,4 +218,4 @@ class BinaryTree:
         display(dot)
         # -------------------------------------
 
-
+"""
