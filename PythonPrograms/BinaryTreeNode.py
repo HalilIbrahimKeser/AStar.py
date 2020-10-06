@@ -1,3 +1,7 @@
+from IPython.core.display import display
+from graphviz import Digraph
+
+
 class BinaryTreeNode:
     def __init__(self, value, lefttree=None, righttree=None):
         self.value = value
@@ -137,3 +141,32 @@ class BinaryTreeNode:
         elif other == None and self.value == None:
             return False
         return False
+
+    # ------------------------------------- fra kunngjøring
+    def dot_visualization(g):
+
+        def add_nodes_edges(tree, dot=None):
+            if dot is None:
+                dot = Digraph()
+                dot.node(name=str(tree), label=str(tree.value))
+
+            if tree.left:
+                dot.node(name=str(tree.left), label=str(tree.left.value))
+                dot.edge(str(tree), str(tree.left))
+                dot = add_nodes_edges(tree.left, dot=dot)
+
+            if tree.right:
+                dot.node(name=str(tree.right), label=str(tree.right.value))
+                dot.edge(str(tree), str(tree.right))
+                dot = add_nodes_edges(tree.right, dot=dot)
+
+            return dot
+
+        dot = add_nodes_edges(g)
+
+        return dot
+
+    def visualize(tree):
+        dot = tree.dot_visualization()
+        display(dot)
+        # -------------------------------------
