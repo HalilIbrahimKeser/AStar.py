@@ -42,11 +42,9 @@ class Test_BinaryTree(unittest.TestCase):
         #print(self.binaryTree.findLeftMost().value)
 
     def test_findLeftMost(self):
-        treeRoot = self.binaryTree._root.value
-        treeRoot_node = BinaryTreeNode(treeRoot)
         mostLeftValue = self.person('AGA', 'ALI HAIBEH', 'LARS 97', '6879', 'SOLVORN')
         mostLeftValue_node = BinaryTreeNode(mostLeftValue)
-        self.assertEqual(mostLeftValue_node, self.binaryTree.findLeftMost(treeRoot_node))
+        self.assertEqual(mostLeftValue_node, self.binaryTree.findLeftMost(treenode=self.binaryTree._root))
 
     def test_findMin(self):
         minimum_value = self.person('AGA', 'ALI HAIBEH', 'LARS 97', '6879', 'SOLVORN')
@@ -55,11 +53,9 @@ class Test_BinaryTree(unittest.TestCase):
         self.assertEqual(node, self.binaryTree.findMin())
 
     def test_findRightMost(self):
-        treeRoot = self.binaryTree._root.value
-        treeRoot_node = BinaryTreeNode(treeRoot)
         mostRightValue = self.person('WIKLEM', 'WIKLEM', 'EIDSTUN 119', '6592', 'LEIRA PÅ NORDMØR')
         mostRightValue_node = BinaryTreeNode(mostRightValue)
-        self.assertEqual(mostRightValue_node, self.binaryTree.findRightMost(treeRoot_node))
+        self.assertEqual(mostRightValue_node, self.binaryTree.findRightMost(treenode=self.binaryTree._root))
 
     def test_findMax(self):
         maximum_value = self.person('WIKLEM', 'WIKLEM', 'EIDSTUN 119', '6592', 'LEIRA PÅ NORDMØR')
