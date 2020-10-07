@@ -62,28 +62,31 @@ class BinaryTree:
             current = self._root
         return current, treenode
 
-    def insert(self, current=None, treenode=None, value=None):
-        if current is None:
+    def insert(self, current = None, treenode = None, value = None):
+        if current == None:
             current = self._root
         # Checking consistency ...
         current, treenode = self._getnodes(current, treenode, value)
-        if current is not None:
+        if current != None:
             if treenode.value < current.value:
+                treenode.level += 1
                 if current.left is None:
                     current.left = treenode
                 else:
                     self.insert(current.left, treenode)
             elif treenode.value > current.value:
+                treenode.level += 1
                 if current.right is None:
                     current.right = treenode
                 else:
                     self.insert(current.right, treenode)
             else:
-                if self._root is None:
+                if self._root == None:
+                    treenode.level = 0
                     self._root = treenode
                 else:
                     raise Exception("Duplicate key: " + treenode.value)
-        else:  # If empty tree, the first node entered is the root
+        else: # If empty tree, the first node entered is the root
             self._root = treenode
         return treenode
 
