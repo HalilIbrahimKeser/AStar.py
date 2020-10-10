@@ -15,7 +15,6 @@ fps = 0.0
 
 
 class Projectile():
-
     def __init__(self, background, kalman=None):
         self.background = background
         self.rect = pg.Rect((800, 700), (16, 16))
@@ -25,7 +24,6 @@ class Projectile():
         self.kalm = kalman
 
     def move(self, goal):
-
         if self.kalm:
             goal = self.kalm.calc_next(goal)
 
@@ -51,7 +49,6 @@ class Projectile():
 
 
 class Target():
-
     def __init__(self, background, width):
         self.background = background
         self.rect = pg.Rect(self.background.get_width() // 2 - width // 2,
@@ -72,21 +69,82 @@ class Target():
         return pos + center + noise * 300.0
 
 
-#
 # Her er Kalmanfilteret du skal utvikle
-#
 class Kalman():
-
     def __init__(self):
-        pass
+        # Initialization
+        self.background = background
+        self.rect = pg.Rect((800, 700), (16, 16))
+        self.px_InitialStateUncertainty = self.rect.x
+        self.py_InitialStateUncertainty = self.rect.y
+        self.dx_InitialSystemState = 0.0
+        self.kalman = 0  # kalman eller Kalman() ? Halil
+        self._n = 0
+        self._z_n = 0
+        self._xn_n = 0.0
+        self._xn_n_minus_1 = 0.0
+        self._xn_n_plus_1 = 0.0
+        self._K_n = 0.0
 
-    def calc_next(self, zi):
-        pass
+    def Kn(self):
+        if self._n > 0:
+            self._K_n = 1 / self._n
+        return self._K_n
+
+    # def StateUpdateEquation(self):
+    #     self.Kn()
+    #     stateUpdadeEquationData = self._xn_n_minus_1 + self.Kn() * (self._z_n - self._xn_n_minus_1)
+    #     return stateUpdadeEquationData
+
+    def Iterate(self):
+        self._n += 1
+        self._xn_n_minus_1 = self._xn_n
+
+    def Measurement(self, value):
+        self._z_n = value
+
+    def calc_next(self, z_i):
+        """Measurement"""
+        self.z_i_MeasuredSystemState = z_i
+        r_i_MeasurementUncertainty = None
+
+        """State Update"""
+        # z_1_MeasuredValue = self.z_i_MeasuredSystemState
+        # The Measurement Uncertainty ( rn ) : ri initialisert over
+        # x_hat_i_PreviousSystemStateEstimate = None
+        # p_i_EstimateUncertainty = self.dx_InitialSystemState - 1
+
+
+        """The state update process calculates the Kalman Gain and provides two outputs"""
+        """Kalman outputs"""
+        # x_hat_i_CurrentSystemStateEstimate = None
+        # p_i_CurrentStateEstimateUncertainty = None
+
+        """Prediction"""
+        # self.z_i_MeasuredSystemState = self.calc_next(z_i)
+
+        self._xn_n = self._xn_n_minus_1 + self.Kn() * (self.z_i_MeasuredSystemState - self._xn_n_minus_1)
+        self._xn_n_pluss_1 = self._xn_n
+        self.Iterate()
+        self.Measurement(weight)
+
+        try:
+            self.rect.x = int(self.px)
+        except:
+            pass
+
+        try:
+            self.rect.y = int(self.py)
+        except:
+            pass
+
+        """The filter outputs"""
+        # x_hat_i_SystemStateEstimate
 
 
 pg.init()
 
-w, h = 1300, 800
+w, h = 1600, 800
 
 background = pg.display.set_mode((w, h))
 surf = pg.surfarray.pixels3d(background)
@@ -121,14 +179,14 @@ while running:
         surf[:, 0:20, 0] = noisy_draw
 
         last_x_pos = target.noisy_x_pos()
-        # print(last_x_pos)
+        print(last_x_pos)
 
         target.move()
         missile.move(last_x_pos)
         k_miss.move(last_x_pos)  # kommenter inn denne linjen naar Kalman er implementert
 
         pg.draw.rect(background, (255, 200, 0), missile.rect)
-        pg.draw.rect(background, (0, 200, 255), k_miss.rect)  # kommenter inn denne linjen naar Kalman er implementert
+        # pg.draw.rect(background, (0, 200, 255), k_miss.rect)  # kommenter inn denne linjen naar Kalman er implementert
         pg.draw.rect(background, (255, 200, 255), target.rect)
 
         noisy_draw[int(last_x_pos):int(last_x_pos) + 20, :] = 255
