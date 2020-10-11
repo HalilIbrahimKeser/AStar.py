@@ -19,6 +19,7 @@ class Projectile():
     def move(self, goal):
         if self.kalm:
             goal = self.kalm.calc_next(goal)
+            print("goal: ", goal)
 
         deltax = np.array(float(goal) - self.px)
         # print(deltax)
@@ -117,7 +118,7 @@ class Kalman():
 
         """The filter outputs"""
         # x_hat_i_SystemStateEstimate
-        return self._z_n
+        return last_x_pos
 
 
 pg.init()
