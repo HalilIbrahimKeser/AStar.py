@@ -7,6 +7,7 @@ fps = 0.0
 
 
 class Projectile():
+
     def __init__(self, background, kalman=None):
         self.background = background
         self.rect = pg.Rect((800, 700), (16, 16))
@@ -20,7 +21,7 @@ class Projectile():
             goal = self.kalm.calc_next(goal)
 
         deltax = np.array(float(goal) - self.px)
-        print("deltax: ", deltax)
+        # print(deltax)
         mag_delta = norm(deltax)  # * 500.0
         np.divide(deltax, mag_delta, deltax)
 
@@ -41,6 +42,7 @@ class Projectile():
 
 
 class Target():
+
     def __init__(self, background, width):
         self.background = background
         self.rect = pg.Rect(self.background.get_width() // 2 - width // 2,
@@ -65,15 +67,8 @@ class Target():
 class Kalman():
     def __init__(self):
         """Initialization"""
-        self.background = background
-        self.rect = pg.Rect((800, 700), (16, 16))
         # Initial State Uncertainty
-        self.px = self.rect.x
-        self.py = self.rect.y
         # InitialSystemState
-        self.dx = 0.0
-        # self.kalman = 0.0  # kalman eller Kalman() ? Halil
-        # -------------------------------------------------
         self._n = 0.0
         self._z_n = 0.0
         self._xn_n = 0.0
@@ -118,21 +113,11 @@ class Kalman():
         self._xn_n = self.StateUpdateEquation()
         self._xn_n_plus_1 = self._xn_n
         self.Iterate()
-        self.Measurement(z_i)
-
-        self.px += self._xn_n_plus_1
-        self.py += -0.5
-        try:
-            self.rect.x = int(self.px)
-        except:
-            pass
-        try:
-            self.rect.y = int(self.py)
-        except:
-            pass
+        self.Measurement(self._z_n)
 
         """The filter outputs"""
         # x_hat_i_SystemStateEstimate
+        return self._z_n
 
 
 pg.init()
@@ -202,7 +187,6 @@ while running:
 
         pg.display.flip()
 
-    print()
     print('kalman score: ', round(kalman_score / iters, 2))  # kommenter inn denne linjen naar Kalman er implementert
     print('regular score: ', round(reg_score / iters, 2), "\n")
 
