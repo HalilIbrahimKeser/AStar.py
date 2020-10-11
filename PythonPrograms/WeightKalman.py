@@ -9,7 +9,7 @@ class Kalman:
         self._z_n = initial_weight
         self._xn_n = 0.0
         self._xn_n_minus_1 = 0.0
-        self._xn_n_pluss_1 = 0.0
+        self._xn_n_plus_1 = 0.0
         self._K_n = 0.0
         self.listWeights = []
 
@@ -33,8 +33,8 @@ class Kalman:
     def Run(self, weights):
         for weight in weights:
             self._xn_n = self.StateUpdateEquation()
-            self._xn_n_pluss_1 = self._xn_n
-            self.listWeights.append(self._xn_n_pluss_1)
+            self._xn_n_plus_1 = self._xn_n
+            self.listWeights.append(self._xn_n_plus_1)
             self.Iterate()
             self.Measurement(weight)
 
