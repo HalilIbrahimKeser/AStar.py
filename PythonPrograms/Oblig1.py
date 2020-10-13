@@ -1,3 +1,11 @@
+"""
+Karaktersatt Obligatorisk Oppgave #1
+
+Brukte denne hjemmesiden til å implementere kode: https://www.kalmanfilter.net/alphabeta.html
+
+Halil Ibrahim Keser
+"""
+
 import pygame as pg
 from random import random, randint
 import numpy as np
@@ -19,11 +27,10 @@ class Projectile():
     def move(self, goal):
         if self.kalm:
             goal = self.kalm.calc_next(goal)
-            print("goal: ", goal)
 
-        deltax = np.array(float(goal) - self.px)
-        # print(deltax)
-        mag_delta = norm(deltax)  # * 500.0
+        deltax = np.array(float(goal) - self.px)  # The track-to-track interval is Δt or Δx ?
+        # print("deltax: \t\t\t", deltax)
+        mag_delta = norm(deltax)  # * 500.0   # magnitude
         np.divide(deltax, mag_delta, deltax)
 
         self.dx += deltax
@@ -43,7 +50,6 @@ class Projectile():
 
 
 class Target():
-
     def __init__(self, background, width):
         self.background = background
         self.rect = pg.Rect(self.background.get_width() // 2 - width // 2,
@@ -55,21 +61,18 @@ class Target():
 
         if self.rect.x < 300 or self.rect.x > self.background.get_width() - 300:
             self.dx *= -1
+        print("\nself.rect.x: \t\t", self.rect.x)
 
     def noisy_x_pos(self):
         pos = self.rect.x
         center = self.rect.width // 2
         noise = np.random.normal(0, 1, 1)[0]
-
         return pos + center + noise * 300.0
 
 
-# Her er Kalmanfilteret du skal utvikle
 class Kalman():
     def __init__(self):
         """Initialization"""
-        # Initial State Uncertainty
-        # InitialSystemState
         self._n = 0.0
         self._z_n = 0.0
         self._xn_n = 0.0
@@ -77,54 +80,58 @@ class Kalman():
         self._xn_n_plus_1 = 0.0
         self._K_n = 0.0
 
-    def Kn(self):
-        if self._n > 0:
-            self._K_n = 1 / self._n
-        return self._K_n
+        self._alpha = 0.2
+        self._beta = 0.1
+        self._gama = 0.1
+        self._delta_t = 10.0  # Ut i fra "noisy_draw = np.zeros((w, 20))"
 
-    def StateUpdateEquation(self):
-        self.Kn()
-        stateUpdadeEquationData = self._xn_n_minus_1 + self.Kn() * (self._z_n - self._xn_n_minus_1)
-        return stateUpdadeEquationData
+        self._xdotn_n = 0.0
+        self._xdotn_n_minus_1 = 0.0
+        self._xdotn_n_plus_1 = 0.0
 
-    def Iterate(self):
-        self._n += 1
-        self._xn_n_minus_1 = self._xn_n
+    def StateUpdateEquationPosition(self):
+        stateUpdateEquationDataPosition = self._xn_n_minus_1 + self._alpha * (self._z_n - self._xn_n_minus_1)
+        return stateUpdateEquationDataPosition
+
+    def StateUpdateEquationVelocity(self):
+        stateUpdateEquationDataVelocity = self._xdotn_n_minus_1 + (self._beta * ((self._z_n - self._xn_n_minus_1)
+                                                                                 / self._delta_t))
+        return stateUpdateEquationDataVelocity
+
+    def CovarianceUpdate(self):
+        covarianceUpdateData = (1 - self._K_n) * self._xn_n_minus_1
+        return covarianceUpdateData
 
     def Measurement(self, value):
         self._z_n = value
-        print("self._z_n: ", self._z_n)
+        r_i_MeasurementUncertainty = None
 
     def calc_next(self, z_i):
         """Measurement"""
         self._z_n = z_i
-        r_i_MeasurementUncertainty = None
-        """State Update"""
-        # z_1_MeasuredValue = self.z_i_MeasuredSystemState
-        # The Measurement Uncertainty ( rn ) : ri initialisert over
-        # x_hat_i_PreviousSystemStateEstimate = None
-        # p_i_EstimateUncertainty = self.dx_InitialSystemState - 1
-        """The state update process calculates the Kalman Gain and provides two outputs"""
-        """Kalman outputs"""
-        # x_hat_i_CurrentSystemStateEstimate = None
-        # p_i_CurrentStateEstimateUncertainty = None
-        """Prediction"""
-        # self.z_i_MeasuredSystemState = self.calc_next(z_i)
+        # print("self._z_n: \t\t\t", self._z_n)
 
-        self._xn_n = self.StateUpdateEquation()
+        """State Update"""
+        self._xn_n = self.StateUpdateEquationPosition()
+        self._xdotn_n = self.StateUpdateEquationVelocity()
+        self._xdotn_n_plus_1 = self._xdotn_n
         self._xn_n_plus_1 = self._xn_n
-        self.Iterate()
+        # Iterate
+        self._n += 1
+        self._xn_n_minus_1 = self._xn_n
+        self._xdotn_n_minus_1 = self._xdotn_n
         self.Measurement(self._z_n)
 
+        """Kalman outputs"""
+        """Prediction"""
+        # delta_t = self._z_i - self._xn_n
         """The filter outputs"""
-        # x_hat_i_SystemStateEstimate
-        return last_x_pos
+        # print("self._xn_n_minus_1: ", self._xn_n_minus_1)
+        return self._xn_n_plus_1
 
 
 pg.init()
-
 w, h = 1600, 800
-
 background = pg.display.set_mode((w, h))
 surf = pg.surfarray.pixels3d(background)
 running = True
@@ -137,8 +144,8 @@ iters = 0
 while running:
     target = Target(background, 32)
     missile = Projectile(background)
-    k_miss = Projectile(background, Kalman())  # kommenter inn denne linjen naar Kalman er implementert
-    last_x_pos = target.noisy_x_pos
+    k_miss = Projectile(background, Kalman())
+    last_x_pos = target.noisy_x_pos  # The radar sends a track beam in the direction of the target with a constant rate.
     noisy_draw = np.zeros((w, 20))
 
     trial = True
@@ -158,14 +165,14 @@ while running:
         surf[:, 0:20, 0] = noisy_draw
 
         last_x_pos = target.noisy_x_pos()
-        print("last_x_pos: ", last_x_pos)
+        #print("last_x_pos : \t\t", last_x_pos)
 
         target.move()
         missile.move(last_x_pos)
-        k_miss.move(last_x_pos)  # kommenter inn denne linjen naar Kalman er implementert
+        k_miss.move(last_x_pos)
 
         pg.draw.rect(background, (255, 200, 0), missile.rect)
-        pg.draw.rect(background, (0, 200, 255), k_miss.rect)  # kommenter inn denne linjen naar Kalman er implementert
+        pg.draw.rect(background, (0, 200, 255), k_miss.rect)
         pg.draw.rect(background, (255, 200, 255), target.rect)
 
         noisy_draw[int(last_x_pos):int(last_x_pos) + 20, :] = 255
@@ -173,22 +180,22 @@ while running:
         np.clip(noisy_draw, 0, 255, noisy_draw)
 
         coll = missile.rect.colliderect(target.rect)
-        k_coll = k_miss.rect.colliderect(target.rect)  # kommenter inn denne linjen naar Kalman er implementert#
+        k_coll = k_miss.rect.colliderect(target.rect)
 
         if coll:
             reg_score += 1
 
-        if k_coll:  # kommenter inn denne linjen naar Kalman er implementert
+        if k_coll:
             kalman_score += 1
 
         oob = missile.rect.y < 20
 
-        if oob or coll or k_coll:  # or k_coll #endre denne sjekken slik at k_coll ogsaa er med naar kalman er implementert
+        if oob or coll or k_coll:
             trial = False
 
         pg.display.flip()
 
-    print('kalman score: ', round(kalman_score / iters, 2))  # kommenter inn denne linjen naar Kalman er implementert
+    print('kalman score: ', round(kalman_score / iters, 2))
     print('regular score: ', round(reg_score / iters, 2), "\n")
 
 pg.quit()

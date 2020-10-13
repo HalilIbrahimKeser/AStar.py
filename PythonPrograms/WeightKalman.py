@@ -34,15 +34,18 @@ class Kalman:
         for weight in weights:
             self._xn_n = self.StateUpdateEquation()
             self._xn_n_plus_1 = self._xn_n
-            self.listWeights.append(self._xn_n_plus_1)
+            self.listWeights.append(round(self._xn_n_plus_1, 4))
             self.Iterate()
             self.Measurement(weight)
 
 
-weights = [78.2, 78.9, 78.1, 78.3, 78.4, 78.9, 78.6, 78.8, 78.7, 78.4, 79, 78.2, 78.7, 78.7, 78.3]
-actualWeight = [78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56]
+weights = [78.2, 78.9, 78.1, 78.3, 78.4, 78.9, 78.6, 78.8, 78.7, 78.4, 79, 78.2, 78.7, 78.7, 78.3,
+           78.2, 78.9, 78.1, 78.3, 78.4, 78.9, 78.6, 78.8, 78.7, 78.4, 79, 78.2, 78.7, 78.7, 78.3]
+actualWeight = [78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56,
+                78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56, 78.56,
+                78.56, 78.56, 78.56, 78.56, 78.56, 78.56]
 
-k = Kalman(78.56)
+k = Kalman(15000)
 plt.title('Kalman\nFilter')
 plt.xlabel('Måling nr')
 plt.ylabel('Vekt')

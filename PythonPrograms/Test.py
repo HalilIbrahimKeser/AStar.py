@@ -1,11 +1,3 @@
-'''
-#
-# Obligatorisk karaktersatt oppgave #1
-#
-# Legg spesielt merke til at det er kun koden i klassen Kalman som kan endres. Det er koden som skal leveres inn
-# Det er derfor viktig at INGEN ANNEN KODE ENDRES !!!
-#
-'''
 import pygame as pg
 from random import random, randint
 import numpy as np
@@ -28,8 +20,8 @@ class Projectile():
         if self.kalm:
             goal = self.kalm.calc_next(goal)
 
-        deltax = np.array(float(goal) - self.px)
-        # print(delta2)
+        deltax = np.array(float(goal) - self.px)  # The track-to-track interval is Δt or Δx
+        # print(deltax)
         mag_delta = norm(deltax)  # * 500.0
         np.divide(deltax, mag_delta, deltax)
 
@@ -62,6 +54,7 @@ class Target():
 
         if self.rect.x < 300 or self.rect.x > self.background.get_width() - 300:
             self.dx *= -1
+        print("\n***self.rect.x: \t", self.rect.x)
 
     def noisy_x_pos(self):
         pos = self.rect.x
@@ -71,16 +64,78 @@ class Target():
         return pos + center + noise * 300.0
 
 
-#
 # Her er Kalmanfilteret du skal utvikle
-#
 class Kalman():
-
     def __init__(self):
-        pass
+        """Initialization"""
+        # Initial State Uncertainty
+        # InitialSystemState
+        self._n = 0.0
+        self._z_i = 0.0
+        self._xn_n = 0.0
+        self._xn_n_minus_1 = 0.0
+        self._xn_n_plus_1 = 0.0
+        self._K_n = 0.0
 
-    def calc_next(self, zi):
-        pass
+        self._x = 0.0
+        self._x_0 = 0.0
+        self._v_0 = 0.0
+        self.delta_t = 0.0
+
+        self.mu = 0.0  # mean # self._xn_n / self._n
+        self.sigma = 0.0  # Standard deviation --- Standard avvik
+        self.variance = self.sigma * self.sigma  # variance
+        self.Est_x = 0.0  # Estimate x
+        self.Est_x_minus_1 = 0.0  # Estimate x
+        self.Est_x_plus_1 = 0.0  # Estimate x
+
+    # Kalman Gain
+    def Kn(self):
+        if self._n > 0:
+            self._K_n = 1 / self._n
+        return self._K_n
+
+    def StateUpdateEquation(self):
+        stateUpdadeEquationData = self._xn_n_minus_1 + self.Kn() * (self._z_i - self._xn_n_minus_1)
+        return stateUpdadeEquationData
+
+    def Iterate(self):
+        self._n += 1
+        self._xn_n_minus_1 = self._xn_n
+
+    def Measurement(self, value):
+        self._z_i = value
+
+    def calc_next(self, z_i):
+        """Measurement"""
+        self._z_i = z_i
+        print("self._z_n: \t\t\t", self._z_i)
+
+        r_i_MeasurementUncertainty = None
+        """State Update"""
+        # z_1_MeasuredValue = self.z_i_MeasuredSystemState
+        # The Measurement Uncertainty ( rn ) : ri initialisert over
+        # x_hat_i_PreviousSystemStateEstimate = None
+        # p_i_EstimateUncertainty = self.dx_InitialSystemState - 1
+        """The state update process calculates the Kalman Gain and provides two outputs"""
+        """Kalman outputs"""
+        # x_hat_i_CurrentSystemStateEstimate = None
+        # p_i_CurrentStateEstimateUncertainty = None
+        """Prediction"""
+        # self.z_i_MeasuredSystemState = self.calc_next(z_i)
+
+        self._xn_n = self.StateUpdateEquation()
+        newGoal = self._xn_n_plus_1
+        self._xn_n_plus_1 = self._xn_n
+        self.Iterate()
+        self.Measurement(self._z_i)
+
+        """The filter outputs"""
+        # x_hat_i_SystemStateEstimate
+
+        print("self._xn_n_minus_1: ", self._xn_n_minus_1)
+
+        return newGoal
 
 
 pg.init()
@@ -99,7 +154,7 @@ iters = 0
 while running:
     target = Target(background, 32)
     missile = Projectile(background)
-    # k_miss = Projectile(background,Kalman()) #kommenter inn denne linjen naar Kalman er implementert
+    k_miss = Projectile(background, Kalman())  # kommenter inn denne linjen naar Kalman er implementert
     last_x_pos = target.noisy_x_pos
     noisy_draw = np.zeros((w, 20))
 
@@ -108,8 +163,8 @@ while running:
 
     while trial:
 
-        # Setter en maksimal framerate p� 300. Hvis dere vil �ke denne er dette en mulig endring
-        clock.tick(300)
+        # Setter en maksimal framerate på 300. Hvis dere vil øke denne er dette en mulig endring
+        clock.tick(300)  # husk å endre til 300
         fps = clock.get_fps()
 
         for e in pg.event.get():
@@ -120,14 +175,14 @@ while running:
         surf[:, 0:20, 0] = noisy_draw
 
         last_x_pos = target.noisy_x_pos()
-        # print(last_x_pos)
+        print("last_x_pos : \t\t", last_x_pos)
 
         target.move()
         missile.move(last_x_pos)
-        # k_miss.move(last_x_pos) #kommenter inn denne linjen naar Kalman er implementert
+        k_miss.move(last_x_pos)  # kommenter inn denne linjen naar Kalman er implementert
 
         pg.draw.rect(background, (255, 200, 0), missile.rect)
-        # pg.draw.rect(background, (0, 200, 255), k_miss.rect) #kommenter inn denne linjen naar Kalman er implementert
+        pg.draw.rect(background, (0, 200, 255), k_miss.rect)  # kommenter inn denne linjen naar Kalman er implementert
         pg.draw.rect(background, (255, 200, 255), target.rect)
 
         noisy_draw[int(last_x_pos):int(last_x_pos) + 20, :] = 255
@@ -135,22 +190,22 @@ while running:
         np.clip(noisy_draw, 0, 255, noisy_draw)
 
         coll = missile.rect.colliderect(target.rect)
-        # k_coll = k_miss.rect.colliderect(target.rect) #kommenter inn denne linjen naar Kalman er implementert#
+        k_coll = k_miss.rect.colliderect(target.rect)  # kommenter inn denne linjen naar Kalman er implementert#
 
         if coll:
             reg_score += 1
 
-        # if k_coll:    #kommenter inn denne linjen naar Kalman er implementert
-        #     kalman_score += 1
+        if k_coll:
+            kalman_score += 1
 
         oob = missile.rect.y < 20
 
-        if oob or coll:  # or k_coll #endre denne sjekken slik at k_coll ogsaa er med naar kalman er implementert
+        if oob or coll or k_coll:  # or k_coll #endre denne sjekken slik at k_coll ogsaa er med naar kalman er implementert
             trial = False
 
         pg.display.flip()
 
-    # print('kalman score: ', round(kalman_score/iters,2)) #kommenter inn denne linjen naar Kalman er implementert
-    print('regular score: ', round(reg_score / iters, 2))
+    print('kalman score: ', round(kalman_score / iters, 2))  # kommenter inn denne linjen naar Kalman er implementert
+    print('regular score: ', round(reg_score / iters, 2), "\n")
 
 pg.quit()
