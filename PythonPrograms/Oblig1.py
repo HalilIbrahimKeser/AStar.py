@@ -53,13 +53,12 @@ class Projectile():
             goal = self.kalm.calc_next(goal)
 
         deltax = np.array(float(goal) - self.px)  # The track-to-track interval is Δt or Δx ?
-        #print("deltax: \t\t\t", deltax)
         mag_delta = norm(deltax)  # * 500.0   # magnitude
         np.divide(deltax, mag_delta, deltax)
 
         self.dx += deltax
         # if self.dx:
-        # self.dx /= norm(self.dx) * 50
+        #    self.dx /= norm(self.dx) * 50
 
         self.px += self.dx / 50.0
         self.py += -0.5
@@ -82,10 +81,8 @@ class Target():
 
     def move(self):
         self.rect.x += self.dx
-
         if self.rect.x < 300 or self.rect.x > self.background.get_width() - 300:
             self.dx *= -1
-        print("\nself.rect.x: \t\t", self.rect.x)
 
     def noisy_x_pos(self):
         pos = self.rect.x
@@ -97,16 +94,18 @@ class Target():
 class Kalman():
     def __init__(self):
         """Initialization"""
-        self._n = 0.0                # Iterasjons verdi
-        self._z_n = 1.0              # Inkommende måling av range (avstand av nois som fremkommer) fra radar
-        self._xn_n = 1.0             # Avstand i tid n=n. Jeg predikerer et tall
-        self._xn_n_minus_1 = 1.0     # Avstand i tid n=n-1
-        self._xn_n_plus_1 = 1.0      # Avstand i tid n=n+1
-        """Kalman Gain"""            # Kalman gain i dette sammenheng er apha og beta
+        self._n = 0.0               # Iterasjons verdi
+        self._z_n = 1.0             # Inkommende måling av range (avstand av nois som fremkommer) fra radar
+        self._xn_n = 1.0            # Avstand i tid n=n. Jeg predikerer et tall
+        self._xn_n_minus_1 = 1.0    # Avstand i tid n=n-1
+        self._xn_n_plus_1 = 1.0     # Avstand i tid n=n+1
+        self.targetX = target.rect.x    # For testing
+        self.targetDifference = 0.0     # For testing
+        """Kalman Gain"""           # Kalman gain i dette sammenheng er apha og beta
         self._Kn = 0.1
-        self._alpha = 0.15              # alpha filter
-        self._beta = 0.23                # beta filter
-        self._delta_t = 280.0             # The track-to-track interval Δt. 1/clock.get_fps()
+        self._alpha = 0.10          # alpha filter
+        self._beta = 0.23           # beta filter
+        self._delta_t = 300         # The track-to-track interval Δt. 1/clock.get_fps()
         """Velocity"""
         self._xdotn_n = 1.0             # Velocity/hastighet i tid n=n
         self._xdotn_n_minus_1 = 1.0     # Velocity/hastighet i tid n=n-1
@@ -115,20 +114,22 @@ class Kalman():
         self._r = 1.0                   # Measurement uncertainty
         self._Pn_n = 1.0                # Extrapolated estimate uncertainty i tid n=n
         self._Pn_n_minus_1 = 1.0        # Extrapolated estimate uncertainty i tid n=n-1
-        self._Pn_n_plus_1 = 1.0         # Extrapolated estimate uncertainty i tid n=n+1
 
     """The Update State Equation for position"""
+
     def StateUpdateEquationPosition(self):
         stateUpdateEquationDataPosition = self._xn_n_minus_1 + self._alpha * (self._z_n - self._xn_n_minus_1)
         return stateUpdateEquationDataPosition
 
     """The Update State Equation for velocity"""
+
     def StateUpdateEquationVelocity(self):
         stateUpdateEquationDataVelocity = \
             self._xdotn_n_minus_1 + (self._beta * ((self._z_n - self._xn_n_minus_1) / self._delta_t))
         return stateUpdateEquationDataVelocity
 
     """The Update State Equation for velocity"""
+
     def StateExtrapolationEquation(self):
         self._xn_n_plus_1 = self._xn_n + (self._delta_t * self._xdotn_n)
         self._xdotn_n_plus_1 = self._xdotn_n
@@ -136,18 +137,20 @@ class Kalman():
         return stateExtrapolationEquation
 
     """Estimate Uncertainty, Measurement uncertainty, Kalman Gain"""
-    # def MeasurementUncertainty(self):
-    #     self._Pn_n = (1 - self._Kn) * self._Pn_n_minus_1
-    #     self._r = self._z_n - self._xn_n
-    #     self._Kn = self._Pn_n_minus_1 / (self._Pn_n_minus_1 + self._r)
-    #     self._alpha = self._Kn
-    #     measurementUncertainty = self._Pn_n + ((self._delta_t * self._delta_t) * self._Pn_n)
-    #     return measurementUncertainty
+
+    def MeasurementUncertainty(self):
+        self._Pn_n = (1 - self._Kn) * self._Pn_n_minus_1
+        self._r = self._z_n - self._xn_n
+        self._Kn = self._Pn_n_minus_1 / (self._Pn_n_minus_1 + self._r)
+        self.targetDifference = self.targetX - self._xn_n   # for testing
+        measurementUncertainty = self._Pn_n + ((self._delta_t * self._delta_t) * self._Pn_n)
+        return measurementUncertainty
 
     def Measurement(self, zi):
-        self._z_n = zi  # Setter posisjonen til target
+        self._z_n = zi      # Setter posisjonen til target
 
     """The Main. Hovedfunksjon"""
+
     def calc_next(self, z_i):
         """Step 1: MEASURE, z_n fa innkommende verdi"""
         self.Measurement(z_i)
@@ -163,16 +166,12 @@ class Kalman():
         self._n += 1                            # Iterer _n iterasjons teller med 1
         self._xn_n_minus_1 = self._xn_n         # Setter forrige xn (posisjon) til nåværende xn
         self._xdotn_n_minus_1 = self._xdotn_n   # Setter forrige x dot n (hastighet) til nåværende x dot n
-        # self._Pn_n_minus_1 = self._Pn_n
+        self._Pn_n_minus_1 = self._Pn_n
 
-        # """Oppdaterer Estimate Uncertainty"""
-        # self._Pn_n = self.MeasurementUncertainty()
+        """Oppdaterer Estimate Uncertainty"""
+        self._Pn_n = self.MeasurementUncertainty() / self._n
 
-        print("self._xn_n: ", self._xn_n)
-        print("self._z_n: ", self._z_n)
-        print("self._xdotn_n: ", self._xdotn_n)
-
-        return self._xn_n  # returnerer nåværende xn verdi
+        return self._xn_n                       # returnerer nåværende xn verdi
 
 
 pg.init()
@@ -197,11 +196,9 @@ while running:
     iters += 1
 
     while trial:
-
         # Setter en maksimal framerate på 300. Hvis dere vil øke denne er dette en mulig endring
         clock.tick(300)
         fps = clock.get_fps()
-        #print(fps)
 
         for e in pg.event.get():
             if e.type == pg.QUIT:
@@ -211,7 +208,6 @@ while running:
         surf[:, 0:20, 0] = noisy_draw
 
         last_x_pos = target.noisy_x_pos()
-        # print("last_x_pos : \t\t", last_x_pos)
 
         target.move()
         missile.move(last_x_pos)
