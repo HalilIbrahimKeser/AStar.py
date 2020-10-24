@@ -96,7 +96,7 @@ class Target():
 
 class Kalman():
     def __init__(self):
-        """Initialisering"""
+        """Initialization"""
         self._n = 0.0                # Iterasjons verdi
         self._z_n = 1.0              # Inkommende måling av range (avstand av nois som fremkommer) fra radar
         self._xn_n = 1.0             # Avstand i tid n=n. Jeg predikerer et tall
@@ -104,10 +104,10 @@ class Kalman():
         self._xn_n_plus_1 = 1.0      # Avstand i tid n=n+1
         """Kalman Gain"""            # Kalman gain i dette sammenheng er apha og beta
         self._Kn = 0.1
-        self._alpha = 0.10              # alpha filter
-        self._beta = 0.26                # beta filter
-        self._delta_t = 0.09             # clock.get_fps(). 300 fps = 0.09 sekunder
-        """Velocity / Hastighet"""
+        self._alpha = 0.15              # alpha filter
+        self._beta = 0.23                # beta filter
+        self._delta_t = 280.0             # The track-to-track interval Δt. 1/clock.get_fps()
+        """Velocity"""
         self._xdotn_n = 1.0             # Velocity/hastighet i tid n=n
         self._xdotn_n_minus_1 = 1.0     # Velocity/hastighet i tid n=n-1
         self._xdotn_n_plus_1 = 1.0      # Velocity/hastighet i tid n=n+1
@@ -117,18 +117,18 @@ class Kalman():
         self._Pn_n_minus_1 = 1.0        # Extrapolated estimate uncertainty i tid n=n-1
         self._Pn_n_plus_1 = 1.0         # Extrapolated estimate uncertainty i tid n=n+1
 
-    """Oppdaterer State Equation for posisjon"""
+    """The Update State Equation for position"""
     def StateUpdateEquationPosition(self):
         stateUpdateEquationDataPosition = self._xn_n_minus_1 + self._alpha * (self._z_n - self._xn_n_minus_1)
         return stateUpdateEquationDataPosition
 
-    """Oppdaterer State Equation for velocity / hastighet"""
+    """The Update State Equation for velocity"""
     def StateUpdateEquationVelocity(self):
         stateUpdateEquationDataVelocity = \
             self._xdotn_n_minus_1 + (self._beta * ((self._z_n - self._xn_n_minus_1) / self._delta_t))
         return stateUpdateEquationDataVelocity
 
-    """Oppdaterer State Equation for velocity / hastighet"""
+    """The Update State Equation for velocity"""
     def StateExtrapolationEquation(self):
         self._xn_n_plus_1 = self._xn_n + (self._delta_t * self._xdotn_n)
         self._xdotn_n_plus_1 = self._xdotn_n
@@ -149,23 +149,23 @@ class Kalman():
 
     """The Main. Hovedfunksjon"""
     def calc_next(self, z_i):
-        """Step 1: Måling, z_n fa innkommende verdi"""
+        """Step 1: MEASURE, z_n fa innkommende verdi"""
         self.Measurement(z_i)
 
-        """Step 2: Oppdaterer, State Update, estimerer current state"""
+        """Step 2: UPDATE, State Update, estimerer current state"""
         self._xn_n = self.StateUpdateEquationPosition()
         self._xdotn_n = self.StateUpdateEquationVelocity()
 
-        """Step 3: Prediksjon"""
+        """Step 3: Prediction"""
         self._xn_n_plus_1 = self.StateExtrapolationEquation()
 
-        """Iterasjon"""
+        """Iteration"""
         self._n += 1                            # Iterer _n iterasjons teller med 1
         self._xn_n_minus_1 = self._xn_n         # Setter forrige xn (posisjon) til nåværende xn
         self._xdotn_n_minus_1 = self._xdotn_n   # Setter forrige x dot n (hastighet) til nåværende x dot n
         # self._Pn_n_minus_1 = self._Pn_n
 
-        """Oppdaterer Estimate Uncertainty"""
+        # """Oppdaterer Estimate Uncertainty"""
         # self._Pn_n = self.MeasurementUncertainty()
 
         # print("self._xn_n: ", self._xn_n)

@@ -5,7 +5,7 @@ final_list = []
 personer_list = namedtuple('personer', ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed'])
 
 try:
-    with open("personer.dta", "r", encoding='latin1') as file:
+    with open("Personer.dta", "r", encoding='latin1') as file:
         for lines in file:
             data = lines.strip("\n").split(';')
             personer = personer_list(etternavn=data[0], fornavn=data[1], adresse=data[2],
