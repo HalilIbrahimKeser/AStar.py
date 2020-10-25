@@ -1,4 +1,4 @@
-from PythonPrograms.BinaryTreeInnlevering5 import BinaryTreeNode
+from PythonPrograms.BinaryTreeInnlevering5.BinaryTreeNode import BinaryTreeNode
 
 
 class BinaryTree:
@@ -122,6 +122,9 @@ class BinaryTree:
             else:
                 parent = current
 
+    '''  
+    # Gammel kode
+
     def delete(self, key):
         #
         # Finding node ... with parent reference ...
@@ -141,23 +144,22 @@ class BinaryTree:
             else:
                 return None
         # using a shallow copy of the original node to maintain deleted node while reassigning it
-        # delnode = node
         import copy
-        delnode = copy.deepcopy(node)
+        delnode = copy.copy(node)
         # If node has no children, we need to update the parent reference
         if not node.left and not node.right:
             if parent.left == node:
                 parent.left = None
             if parent.right == node:
-                parent.right = None
+                parent.right = None 
             if node == self._root:
-                self._root = None
+                self._root = None               
             node = None
         elif node.right:
             if node.right.left is None:
-                node.value = node.right.value
+                node.value = node.right.value 
                 node.right = node.right.right
-            else:
+            else: 
                 temptree = BinaryTree(node.right)
                 mintempnode = temptree.deleteMin()
                 node.value = mintempnode.value
@@ -165,6 +167,7 @@ class BinaryTree:
             if parent.left == node:
                 parent.left = node.left
             elif parent.right == node:
-                parent.right = node.left
+                parent.right = node.left  
         return delnode
-
+    '''
+    # Kode for rekursiv sletting - delete()-metoden i BinaryTree legges inn her:
