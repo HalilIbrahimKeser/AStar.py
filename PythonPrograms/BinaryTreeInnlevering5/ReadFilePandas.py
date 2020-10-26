@@ -1,43 +1,50 @@
 # Oblig 5, Halil Ibrahim Keser
-from collections import namedtuple
+
 from PythonPrograms.BinaryTreeInnlevering5.BinaryTree import BinaryTree
 from PythonPrograms.BinaryTreeInnlevering5.BinaryTreeNode import BinaryTreeNode
+
+from collections import namedtuple
 import pandas as pd
 
-
-# 1: A)
-
-def setOpp(self):
-    self.colNames = ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed']
-    self.PATH = 'Personer.dta'
-    self.person_list = []
-    self.person_tuples = namedtuple('person',
-                                    ['index', 'etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed'])
-    self.person = pd.read_csv(self.PATH, header=None, sep='\n', delimiter=';', engine='python',
-                              names=self.colNames, encoding='latin1',
-                              dtype=namedtuple(typename='person',
-                                               field_names='etternavn fornavn adresse postnummer poststed'))
-
-    for row in self.person.itertuples(index=True, name='person'):
-        i = self.person_tuples(index=row[0], etternavn=row[1], fornavn=row[2], adresse=row[3],
-                               postnummer=row[4], poststed=row[5])
-        self.person_list.append(i)
-
-        # 1: B)
-    self.binaryTree = BinaryTree()
-    for person in self.person_list:
-        self.binaryTree.insert(value=person)
-
-    # 1: C)
-    row1 = self.person('0', 'KRISTIANSEN', 'MORTEN KRISTIAN', 'LEINAHYTTA 36', '7224', 'MELHUS')
-    row10 = self.person('10', 'ELI', 'RITA HELEN', 'MEHEIAVEGEN 80', '4436', 'GYLAND')
-    row100 = self.person('100', 'KRISTIANSEN', 'MORTEN KRISTIAN', 'LEINAHYTTA 36', '7224', 'MELHUS')
-    row1000 = self.person('1000', 'ELI', 'RITA HELEN', 'MEHEIAVEGEN 80', '4436', 'GYLAND')
-    row10000 = self.person('10000', 'KRISTIANSEN', 'MORTEN KRISTIAN', 'LEINAHYTTA 36', '7224', 'MELHUS')
-    row100000 = self.person('100000', 'ELI', 'RITA HELEN', 'MEHEIAVEGEN 80', '4436', 'GYLAND')
-    print(self.binaryTree.find(index='0'))
-    print(self.binaryTree.find(row10))
+binaryTree = BinaryTree()
 
 
-if __name__ == '__main__':
-    setOpp(self)
+def lesFilMedPandas():
+    colNames = ['etternavn', 'fornavn', 'adresse', 'postnummer', 'poststed']
+    PATH = 'Personer.dta'
+    person = pd.read_csv(PATH, header=None, sep='\n', delimiter=';', engine='python',
+                         names=colNames, encoding='latin1')
+    return person
+
+
+def leggInnSomNamedTuples(person):
+    list_person_tuples = []
+    for row in person.itertuples(index=False, name='Person'):
+        list_person_tuples.append(row)
+    return list_person_tuples
+
+
+def leggInnIBinaryTree(namedTuple):
+    for i in namedTuple:
+        binaryTree.insert(value=i)
+
+
+def settOppLevel():
+    level_list = []
+    tuples_with_levels = namedtuple('tuples_with_levels', 'etternavn, fornavn, adresse, postnummer, poststed, level')
+    for i in range(0, 100000):
+        if i == 0 or i == 9 or i == 99 or i == 999 or i == 9999 or i == 99999:
+            tuples_with_levels = person_list_tuples[i]
+            level_list.append(tuples_with_levels)
+            level_list.append(binaryTree.find(person_list_tuples[i]).level)
+    for i in level_list:  # Print, fjernes om man ikke ønsker print
+        print(i)
+    return level_list
+
+
+person = lesFilMedPandas()
+person_list_tuples = leggInnSomNamedTuples(person)
+leggInnIBinaryTree(person_list_tuples)
+settOppLevel()
+# levelListe = settOppLevel()
+# print(levelListe)
