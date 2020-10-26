@@ -48,3 +48,8 @@ leggInnIBinaryTree(person_list_tuples)
 settOppLevel()
 # levelListe = settOppLevel()
 # print(levelListe)
+
+person1000 = binaryTree.find(person_list_tuples[999])
+person10000 = binaryTree.find(person_list_tuples[9999])
+binaryTree.delete(person1000)
+binaryTree.delete(person10000)
