@@ -122,126 +122,80 @@ class BinaryTree:
             else:
                 parent = current
 
-    def delete(self, key):
+    def delete(self, key, root=None):
+
         parent = self._root
         current = parent
-        temp = parent
 
-        if self is None:
-            return self
-        while True:
-            if key < current.value:
-                parent.left = self.delete(parent.left)
-            elif key > current.value:
-                parent.right = self.delete(parent.right)
-            else:
-                if parent.left is None:
-                    temp = parent.right
-                    parent = None
-                    return temp
-                elif parent.right is None:
-                    temp = parent.left
-                    parent = None
-                    return temp
+        if root is None:
+            root = self._root
+        if root is None:
+            return None
 
-            temp = fidMin(parent.right)
-            parent.value = temp
-            parent.right = self.delete(parent.right)
-            return parent
+        # if key.value < root.value and root.level != 0:
+        if key.value < root.value:
+            root = self.delete(key, root.left)
+        # elif key.value > root.value and root.level != 0:
+        elif key.value > root.value:
+            root = self.delete(key, root.right)
+        else:
+            import copy
+            node = current
+            delnode = copy.copy(node)
+            # If node has no children, we need to update the parent reference
+            if not node.left and not node.right:
+                if parent.left == node:
+                    parent.left = None
+                if parent.right == node:
+                    parent.right = None
+                if node == self._root:
+                    self._root = None
+                node = None
+            elif node.right:
+                if node.right.left is None:
+                    node.value = node.right.value
+                    node.right = node.right.right
+                else:
+                    temptree = BinaryTree(node.right)
+                    mintempnode = temptree.deleteMin()
+                    node.value = mintempnode.value
+            elif node.left:
+                if parent.left == node:
+                    parent.left = node.left
+                elif parent.right == node:
+                    parent.right = node.left
 
-    '''  
-    # Gammel kode
+        return root
 
-    def delete(self, key):
-        #
-        # Finding node ... with parent reference ...
-        # Need the parent reference to update tree references
-        parent = self._root
-        current = parent
-        while True:
-            if key < current.value:
-                parent = current
-                current = parent.left
-            elif key > current.value:
-                parent = current
-                current = parent.right
-            elif key == current.value:
-                node = current
-                break
-            else:
-                return None
-        # using a shallow copy of the original node to maintain deleted node while reassigning it
-        import copy
-        delnode = copy.copy(node)
-        # If node has no children, we need to update the parent reference
-        if not node.left and not node.right:
-            if parent.left == node:
-                parent.left = None
-            if parent.right == node:
-                parent.right = None 
-            if node == self._root:
-                self._root = None               
-            node = None
-        elif node.right:
-            if node.right.left is None:
-                node.value = node.right.value 
-                node.right = node.right.right
-            else: 
-                temptree = BinaryTree(node.right)
-                mintempnode = temptree.deleteMin()
-                node.value = mintempnode.value
-        elif node.left:
-            if parent.left == node:
-                parent.left = node.left
-            elif parent.right == node:
-                parent.right = node.left  
-        return delnode
-    '''
+#  Denne får feilmelding
+#  File "C:\Dokumenter PC\My Office\Prosjekt\PythonProjects\PythonPrograms\
+#           BinaryTreeInnlevering5\BinaryTree.py", line 132, in delete
+#     if key.value < root.value:
+# AttributeError: 'Person' object has no attribute 'value'
 
-    # # Kode for rekursiv sletting - delete()-metoden i BinaryTree legges inn her:
-    # def delete(self, key):
-    #     parent = self._root
-    #     current = parent
+    # def delete(self, key, root=None):
     #
-    #     if self is None:
-    #         return self
+    #     if root is None:
+    #         root = self._root
+    #     if root is None:
+    #         return None
     #
-    #     while True:
-    #         if key < current.value:
-    #             parent.left = delete(parent.left, key)
-    #         elif key > current.value:
-    #             parent.right = delete(parent.right, key)
-    #         elif key == current.value:
-    #             node = current
-    #             break
-    #         else:
-    #             return None
+    #     if key.value < root.value:
+    #         root = self.delete(key, root.left)
+    #     elif key.value > root.value:
+    #         root = self.delete(key, root.right)
+    #     else:
+    #         if root.left is None:
+    #             tempTree = root.right
+    #             root.value = None
+    #             return tempTree
+    #         elif root.right is None:
+    #             tempTree = root.left
+    #             root.value = None
+    #             return tempTree
     #
-    #     import copy
-    #     delnode = copy.copy(node)
+    #         tempTree = self.findLeftMost(root.right)
+    #         root.value = tempTree.value
+    #         root.right = self.delete(tempTree.value, root.right)
     #
-    #     if not node.left and not node.right:
-    #         if parent.left == node:
-    #             parent.left = None
-    #         if parent.right == node:
-    #             parent.right = None
-    #         if node == self._root:
-    #             self._root = None
-    #         node = None
-    #
-    #     elif node.right:
-    #         if node.right.left is None:
-    #             node.value = node.right.value
-    #             node.right = node.right.right
-    #         else:
-    #             temptree = BinaryTree(node.right)
-    #             mintempnode = temptree.deleteMin()
-    #             node.value = mintempnode.value
-    #
-    #     elif node.left:
-    #         if parent.left == node:
-    #             parent.left = node.left
-    #         elif parent.right == node:
-    #             parent.right = node.left
-    #     return delnode
-
+    #     return root.value
