@@ -5,8 +5,8 @@ from PythonPrograms.BinaryTreeInnlevering5.BinaryTree import BinaryTree
 import pandas as pd
 
 binaryTree = BinaryTree()
-list_person_namedTuples1 = []
 level_list = []
+count_levels = {}
 
 
 def lesFilMedPandas():
@@ -17,8 +17,9 @@ def lesFilMedPandas():
     return personer1
 
 
-def leggNamedTuplesIList(person):
-    for row in person.itertuples(index=False, name='Person'):
+def leggNamedTuplesIList(df):
+    list_person_namedTuples1 = []
+    for row in df.itertuples(index=False, name='Person'):
         list_person_namedTuples1.append(row)
     return list_person_namedTuples1
 
@@ -37,57 +38,59 @@ def leggInnLevelIEgenListe():
     return level_list
 
 
-personer = lesFilMedPandas()
-list_person_namedTuples = leggNamedTuplesIList(personer)
+def tellOppLevels():
+    for i in list_person_namedTuples:
+        if binaryTree.find(i) is not None:
+            level = binaryTree.find(i).level
+            if level in count_levels:
+                count_levels[level] += 1
+            else:
+                count_levels[level] = 1
+    return count_levels
+
+
+df = lesFilMedPandas()
+list_person_namedTuples = leggNamedTuplesIList(df)
 leggInnIBinaryTree(list_person_namedTuples)
 leggInnLevelIEgenListe()
 
-person1 = binaryTree.find(list_person_namedTuples[0])
-person10 = binaryTree.find(list_person_namedTuples[9])
-person100 = binaryTree.find(list_person_namedTuples[99])
-person1000 = binaryTree.find(list_person_namedTuples[999])
-person10000 = binaryTree.find(list_person_namedTuples[9999])
-person100000 = binaryTree.find(list_person_namedTuples[99999])
+# Oppgave 1 C, Skriv ut nivået og verdien for rad nr 1, 10, 100, 1000, 10000, 100000 fra filen Personer.dta
+print("\nOppgave 1: Noder og nivåer:")
+print(binaryTree.find(list_person_namedTuples[0]).value,
+      "level=", binaryTree.find(list_person_namedTuples[0]).level)
+print(binaryTree.find(list_person_namedTuples[9]).value,
+      "level=", binaryTree.find(list_person_namedTuples[9]).level)
+print(binaryTree.find(list_person_namedTuples[99]).value,
+      "level=", binaryTree.find(list_person_namedTuples[99]).level)
+print(binaryTree.find(list_person_namedTuples[999]).value,
+      "level=", binaryTree.find(list_person_namedTuples[999]).level)
+print(binaryTree.find(list_person_namedTuples[9999]).value,
+      "level=", binaryTree.find(list_person_namedTuples[9999]).level)
+print(binaryTree.find(list_person_namedTuples[99999]).value,
+      "level=", binaryTree.find(list_person_namedTuples[99999]).level)
 
-print("\nFør sletting:")
-print("Person 1: \t\t", person1.value, "Level: ", person1.level)
-print("Person 10: \t\t", person10.value, "Level: ", person10.level)
-print("Person 100: \t", person100.value, "Level: ", person100.level)
-print("Person 1000: \t", person1000.value, "Level: ", person1000.level)
-print("Person 10000: \t", person10000.value, "Level: ", person10000.level)
-print("Person 100000: \t", person100000.value, "Level: ", person100000.level)
+# Oppgave 2 B, Slett rad nr. 1000 og 10000
+print("\nOppgave 2 B: Før sletting:")
+print(binaryTree.find(list_person_namedTuples[999]).value, binaryTree.find(list_person_namedTuples[999]).level)
+print(binaryTree.find(list_person_namedTuples[9999]).value, binaryTree.find(list_person_namedTuples[999]).level)
 
-binaryTree.delete(person1000)
-binaryTree.delete(person10000)
-
-# person1 = binaryTree.find(list_person_namedTuples[0])
-person10 = binaryTree.find(list_person_namedTuples[9])
-person100 = binaryTree.find(list_person_namedTuples[99])
-person1000 = binaryTree.find(list_person_namedTuples[999])
-person10000 = binaryTree.find(list_person_namedTuples[9999])
-person100000 = binaryTree.find(list_person_namedTuples[99999])
+binaryTree.delete(list_person_namedTuples[999])
+binaryTree.delete(list_person_namedTuples[9999])
 
 print("\nEtter sletting:")
-# print("Person 1: \t\t", person1.value)
-print("Person 10: \t\t", person10.value)
-print("Person 100: \t", person100.value)
-print("Person 1000: \t", person1000.value)
-print("Person 10000: \t", person10000.value)
-print("Person 100000: \t", person100000.value)
+print(binaryTree.find(list_person_namedTuples[999]))
+print(binaryTree.find(list_person_namedTuples[9999]))
 
-person8 = binaryTree.find(list_person_namedTuples[8])
-person50 = binaryTree.find(list_person_namedTuples[50])
-person400 = binaryTree.find(list_person_namedTuples[400])
-person2300 = binaryTree.find(list_person_namedTuples[2300])
-person8000 = binaryTree.find(list_person_namedTuples[8000])
-person49999 = binaryTree.find(list_person_namedTuples[49999])
-person75000 = binaryTree.find(list_person_namedTuples[75000])
+print("\nOppgave 3: Innleveringsdel")
+print("Person 8, \t\tLevel= ", binaryTree.find(list_person_namedTuples[7]).level)
+print("Person 50, \t\tLevel= ", binaryTree.find(list_person_namedTuples[49]).level)
+print("Person 400, \tLevel= ", binaryTree.find(list_person_namedTuples[399]).level)
+print("Person 2300, \tLevel= ", binaryTree.find(list_person_namedTuples[2299]).level)
+print("Person 8000, \tLevel= ", binaryTree.find(list_person_namedTuples[7999]).level)
+print("Person 49999, \tLevel= ", binaryTree.find(list_person_namedTuples[49998]).level)
+print("Person 75000, \tLevel= ", binaryTree.find(list_person_namedTuples[74999]).level)
 
-print("\nInnleveringsdel")
-print("Person 8: \t\t", person8.value)
-print("Person 50: \t\t", person50.value)
-print("Person 400: \t", person400.value)
-print("Person 2300: \t", person2300.value)
-print("Person 8000: \t", person8000.value)
-print("Person 49999: \t", person49999.value)
-print("Person 75000: \t", person75000.value)
+print("\nAntall noder i hvert nivå")
+dict_list = tellOppLevels()
+for i in dict_list:
+    print("Nivå: ", i, ", Noder: ", dict_list[i])

@@ -124,78 +124,42 @@ class BinaryTree:
 
     def delete(self, key, root=None):
 
-        parent = self._root
-        current = parent
-
         if root is None:
             root = self._root
-        if root is None:
-            return None
 
-        # if key.value < root.value and root.level != 0:
-        if key.value < root.value:
-            root = self.delete(key, root.left)
-        # elif key.value > root.value and root.level != 0:
-        elif key.value > root.value:
-            root = self.delete(key, root.right)
+        if key < root.value:
+            root.left = self.delete(key, root.left)
+
+        elif (key > root.value):
+            root.right = self.delete(key, root.right)
+
         else:
-            import copy
-            node = current
-            delnode = copy.copy(node)
-            # If node has no children, we need to update the parent reference
-            if not node.left and not node.right:
-                if parent.left == node:
-                    parent.left = None
-                if parent.right == node:
-                    parent.right = None
-                if node == self._root:
-                    self._root = None
-                node = None
-            elif node.right:
-                if node.right.left is None:
-                    node.value = node.right.value
-                    node.right = node.right.right
-                else:
-                    temptree = BinaryTree(node.right)
-                    mintempnode = temptree.deleteMin()
-                    node.value = mintempnode.value
-            elif node.left:
-                if parent.left == node:
-                    parent.left = node.left
-                elif parent.right == node:
-                    parent.right = node.left
+            if root.left is None:
+                tempTree = root.right
+                root = None
+                return tempTree
+            elif self._root.right is None:
+                tempTree = root.left
+                root = None
+                return tempTree
+
+            tempTree = self.findLeftMost(root.right)
+            root.value = tempTree.value
+            root.right = self.delete(tempTree.value, root.right)
 
         return root
 
-#  Denne får feilmelding
-#  File "C:\Dokumenter PC\My Office\Prosjekt\PythonProjects\PythonPrograms\
-#           BinaryTreeInnlevering5\BinaryTree.py", line 132, in delete
-#     if key.value < root.value:
-# AttributeError: 'Person' object has no attribute 'value'
 
-    # def delete(self, key, root=None):
-    #
-    #     if root is None:
-    #         root = self._root
-    #     if root is None:
-    #         return None
-    #
-    #     if key.value < root.value:
-    #         root = self.delete(key, root.left)
-    #     elif key.value > root.value:
-    #         root = self.delete(key, root.right)
-    #     else:
-    #         if root.left is None:
-    #             tempTree = root.right
-    #             root.value = None
-    #             return tempTree
-    #         elif root.right is None:
-    #             tempTree = root.left
-    #             root.value = None
-    #             return tempTree
-    #
-    #         tempTree = self.findLeftMost(root.right)
-    #         root.value = tempTree.value
-    #         root.right = self.delete(tempTree.value, root.right)
-    #
-    #     return root.value
+
+
+
+
+
+
+
+
+
+
+
+
+

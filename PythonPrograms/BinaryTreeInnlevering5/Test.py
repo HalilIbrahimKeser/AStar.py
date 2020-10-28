@@ -117,31 +117,58 @@ print("\nInorder traversal of the modified tree")
 inorder(root)
 
 
-def delete(self, key, root=None):
-    if root is None:
-        root = self._root
-    if root is None:
-        return None
+# def delete(self, key, root=None):
+#     if root is None:
+#         root = self._root
+#     if root is None:
+#         return None
+#
+#     if key.value < root.value:
+#         root.left = self.delete(key, root.left)
+#     elif key.value > root.value:
+#         root.right = self.delete(key, root.right)
+#     else:
+#         if root.left is None:
+#             tempTree = root.right
+#             root.value = None
+#             return tempTree
+#         elif root.right is None:
+#             tempTree = root.left
+#             root.value = None
+#             return tempTree
+#
+#         tempTree = self.findLeftMost(root.right)
+#         root.value = tempTree.value
+#         root.right = self.delete(tempTree.value, root.right)
+#
+#     return root
 
-    if key.value < root.value:
-        root.left = self.delete(key, root.left)
-    elif key.value > root.value:
-        root.right = self.delete(key, root.right)
-    else:
-        if root.left is None:
-            tempTree = root.right
-            root.value = None
-            return tempTree
-        elif root.right is None:
-            tempTree = root.left
-            root.value = None
-            return tempTree
+# def delete(self, key, root=None):
+#     if root is None:
+#         root = self._root
+#     if root is None:
+#         return None
+#
+#     if key.value < root.value:
+#         root.left = self.delete(key, root.left)
+#     elif key.value > root.value:
+#         root.right = self.delete(key, root.right)
+#     else:
+#         if root.left is None:
+#             tempTree = root.right
+#             root.value = None
+#             return tempTree
+#         elif root.right is None:
+#             tempTree = root.left
+#             root.value = None
+#             return tempTree
+#
+#         tempTree = self.findLeftMost(root.right)
+#         root.value = tempTree.value
+#         root.right = self.delete(tempTree.value, root.right)
+#
+#     return root
 
-        tempTree = self.findLeftMost(root.right)
-        root.value = tempTree.value
-        root.right = self.delete(tempTree.value, root.right)
-
-    return root
 
 def delete(self, key, root=None):
     if root is None:
