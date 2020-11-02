@@ -199,19 +199,23 @@ class AStar(Graph):
 
     def Dijkstra(self, startVertexName=None, targetVertexName=None):
         self.initPygame()
+
         # Check to see that startvertex is in Graph
         if startVertexName not in self.vertecies:
             raise KeyError("Start node not present in graph")
+
         # Reset visited and previous pointer before running algorithm
         vertex = self.vertecies[startVertexName]
         vertex.distance = distance = weight = 0
         previous_node = None
         startNode = self.vertecies[startVertexName]
         toNode = self.vertecies[targetVertexName]
+
         #
         # Create priority queue, priority = current weight on edge ...
         # No duplicate edges in queue allowed
         #
+
         edge = Edge(0, vertex)
         from queue import PriorityQueue
         priqueue = PriorityQueue()
@@ -224,6 +228,7 @@ class AStar(Graph):
             return priqueue.get()
 
         enqueue(edge)
+
         while not priqueue.empty():
             # Get the element with lowest priority (i.e. weight on edge)
             edge = dequeue()
@@ -231,6 +236,7 @@ class AStar(Graph):
             self.pygameState(eyeball, self.GREEN)
             self.pygameState(startNode, self.BLUE)
             self.pygameState(toNode, self.RED)
+
             # If not visited previously, we need to define the distance
             if not eyeball.known:
                 eyeball.distance = distance
@@ -271,16 +277,16 @@ class AStar(Graph):
         pass
 
 
-astar = AStar(delay=0, visual=True)
+astar = AStar(delay=1, visual=True)
 
-# astar.readFile('minigraf.txt')
-# startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
+astar.readFile('minigraf.txt')
+startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
 # astar.readFile('astjernegraf.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('xtras.txt')
 # astar.readFile('biggraph.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('biggraph_xtras.txt')
-astar.readFile('AStarObligGraf.txt')
-startVertexName, targetVertexName, removed = astar.readLimitations('AStarObligGraf_xtras.txt')
+# astar.readFile('AStarObligGraf.txt')
+# startVertexName, targetVertexName, removed = astar.readLimitations('AStarObligGraf_xtras.txt')
 
 astar.Dijkstra(startVertexName, targetVertexName)
 # astar.AStarSearch(startVertexName, targetVertexName)
