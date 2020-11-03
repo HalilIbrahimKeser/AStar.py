@@ -292,18 +292,24 @@ class AStar(Graph):
         end_node = self.vertecies[targetVertexName]
         end_node.g = end_node.h = end_node.f = 0
 
-        # Initialize both open and closed list as PriorityQueue
+        # Initialize both open and closed list.
+        # Open_list as PriorityQueue for faster iteration og Big data
         from queue import PriorityQueue
-        open_list = []
+        open_list = PriorityQueue()
         closed_list = []
 
-        # Add the start node
-        open_list.append(start_node)
+        def enqueue_open_list(data):
+            open_list.put(data)
 
-        #
-        # Create priority queue, priority = current weight on edge ...
+        def dequeue_open_list():
+            return open_list.get()
+
+        # Add the start node
+        enqueue_open_list(start_node)
+        # open_list.append(start_node)
+
+        # Create priority queue, priority = current weight on edge
         # No duplicate edges in queue allowed
-        #
         edge = Edge(0, start_node)
         priqueue = PriorityQueue()
 
@@ -313,23 +319,27 @@ class AStar(Graph):
 
         def dequeue():
             return priqueue.get()
-
         enqueue(edge)
 
         # Loop until you find the end, while the openList is not empty
-        while len(open_list) > 0:
+        # while len(open_list) > 0:
+        while not open_list.empty():
 
             # Get the current node,
-            eyeball = open_list[0]
-            eyeball_index = 0
+            eyeball = dequeue_open_list()
+            eyeball_index = eyeball.vertex
             self.pygameState(eyeball, self.GREEN)
             self.pygameState(start_node, self.BLUE)
             self.pygameState(end_node, self.RED)
 
             # let the currentNode equal the node with the least f value
-            for index, item in enumerate(open_list):
-                if item.f < eyeball.f:
-                    eyeball = item
+            # for item in open_list:
+            index = 0
+            while not open_list.empty():
+                next_item = open_list.get()
+                if next_item.f < eyeball.f:
+                    eyeball = next_item
+                    index += 1
                     eyeball_index = index
 
             # If not visited previously, we need to define the distance
@@ -341,7 +351,8 @@ class AStar(Graph):
             # remove the currentNode from the openList
             # add the currentNode to the closedList
             # Pop current off open list, add to closed list
-            open_list.pop(eyeball_index)
+                # enqueue_open_list(eyeball_index)
+            # open_list.pop(eyeball_index)
             closed_list.append(eyeball)
 
             # Found the goal
@@ -372,12 +383,13 @@ class AStar(Graph):
                 adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
 
                 # Child is already in the open list
-                for open_node in open_list:
+                for open_node in open_list.queue:
                     if adjecentedge.vertex == open_node and adjecentedge.vertex.g > open_node.g:
                         continue
 
                 # Add the child to the open list
-                open_list.append(adjecentedge.vertex)
+                enqueue_open_list(adjecentedge.vertex)
+                # open_list.append(adjecentedge.vertex)
 
             self.pygameState(eyeball, self.LIGHTGREY)
         for n in self.getPath(startVertexName, targetVertexName):
@@ -385,7 +397,7 @@ class AStar(Graph):
         return self.getPath(startVertexName, targetVertexName)
 
 
-astar = AStar(delay=0.01, visual=True)
+astar = AStar(delay=0, visual=True)
 
 # astar.readFile('minigraf.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
