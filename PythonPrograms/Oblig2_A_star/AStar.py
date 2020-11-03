@@ -10,12 +10,12 @@ The AStar class inherits the Graph class
 
 
 class AStar(Graph):
-    '''
+    """
     #
     #  delay: seconds between each iteration when visualizing is turned on
     # visual: Turns pygame visualization on/off
     #
-    '''
+    """
 
     def __init__(self, delay=0.001, visual=True):
         super().__init__()
@@ -30,7 +30,8 @@ class AStar(Graph):
         self.RED = (255, 0, 0)
         self.BLUE = (0, 0, 255)
         self.delay = delay
-        # walls define obstacles in grid, e.g. walls, boxes etc, by defining each position in grid that is part of an obstacle
+        # walls define obstacles in grid, e.g. walls, boxes etc, by defining each position in grid that is part of an
+        # obstacle
         self.walls = []
 
     '''       
@@ -274,22 +275,103 @@ class AStar(Graph):
     '''
 
     def AStarSearch(self, startVertexName=None, targetVertexName=None):
-        pass
+        """Returns a list of tuples as a path from the given start to the given end in the given maze"""
+        self.initPygame()
+        # Check to see that startvertex is in Grap
+        if startVertexName not in self.vertecies:
+            raise KeyError("Start node not present in graph")
+
+        # Reset visited and previous pointer before running algorithm
+        start_node = self.vertecies[startVertexName]
+        start_node.g = start_node.h = start_node.f = 0
+        end_node = self.vertecies[targetVertexName]
+        end_node.g = end_node.h = end_node.f = 0
+
+        # Initialize both open and closed list
+        open_list = []
+        closed_list = []
+
+        # Add the start node
+        open_list.append(start_node)
+
+        # Loop until you find the end
+        while len(open_list) > 0:
+            # Get the current node
+            eyeball = open_list[0]
+            eyeball_index = 0
+            self.pygameState(eyeball, self.GREEN)
+            self.pygameState(start_node, self.BLUE)
+            self.pygameState(end_node, self.RED)
+
+            for index, item in enumerate(open_list):
+                if item.f < eyeball.f:
+                    eyeball = item
+                    eyeball_index = index
+
+            # Pop current off open list, add to closed list
+            open_list.pop(eyeball_index)
+            closed_list.append(eyeball)
+
+            # Found the goal
+            if eyeball == end_node:
+                path = []
+                current = eyeball
+                while current is not None:
+                    path.append(current.position)
+                    current = current.parent
+                return path[::-1]  # Return reversed path
+
+            # Generate children
+            children = []
+            for adjecentedge in eyeball.adjecent:  # Adjacent squares
+                # Get node position
+                node_position = (eyeball.position[0] + adjecentedge[0], eyeball.position[1] + adjecentedge[1])
+
+                # Create new node
+                new_node = Vertex(start_node, node_position)
+
+                # Append
+                children.append(new_node)
+
+            # Loop through children
+            for child in children:
+                # Child is on the closed list
+                for closed_child in closed_list:
+                    if child == closed_child:
+                        continue
+
+                # Create the f, g, and h values
+                child.g = eyeball.g + (child.distance - eyeball.distance)
+                child.h = self.heuristics(start_node, end_node)
+                child.f = child.g + child.h
+
+                # Child is already in the open list
+                for open_node in open_list:
+                    if child == open_node and child.g > open_node.g:
+                        continue
+
+                # Add the child to the open list
+                open_list.append(child)
+
+            self.pygameState(eyeball, self.LIGHTGREY)
+        for n in self.getPath(startVertexName, targetVertexName):
+            self.pygameState(n, self.DARKGREEN)
+        return self.getPath(startVertexName, targetVertexName)
 
 
 astar = AStar(delay=1, visual=True)
 
-astar.readFile('minigraf.txt')
-startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
-# astar.readFile('astjernegraf.txt')
-# startVertexName, targetVertexName, removed = astar.readLimitations('xtras.txt')
+# astar.readFile('minigraf.txt')
+# startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
+astar.readFile('astjernegraf.txt')
+startVertexName, targetVertexName, removed = astar.readLimitations('xtras.txt')
 # astar.readFile('biggraph.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('biggraph_xtras.txt')
 # astar.readFile('AStarObligGraf.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('AStarObligGraf_xtras.txt')
 
-astar.Dijkstra(startVertexName, targetVertexName)
-# astar.AStarSearch(startVertexName, targetVertexName)
+# astar.Dijkstra(startVertexName, targetVertexName)
+astar.AStarSearch(startVertexName, targetVertexName)
 
 if astar.pygame:
     from pygame.locals import *

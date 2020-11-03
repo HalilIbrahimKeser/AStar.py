@@ -2,7 +2,6 @@ from PythonPrograms.Oblig2_A_star.Vertex import Vertex
 from PythonPrograms.Oblig2_A_star.Edge import Edge
 
 
-
 class Graph():
 
     def __init__(self):
@@ -271,4 +270,3 @@ class Graph():
 
                 if edge.vertex.indegree == 0:
                     enqueue(edge.vertex)
-
