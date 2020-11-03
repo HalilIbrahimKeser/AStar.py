@@ -275,83 +275,109 @@ class AStar(Graph):
     '''
 
     def AStarSearch(self, startVertexName=None, targetVertexName=None):
-        """Returns a list of tuples as a path from the given start to the given end in the given maze"""
         self.initPygame()
+
         # Check to see that startvertex is in Grap
         if startVertexName not in self.vertecies:
             raise KeyError("Start node not present in graph")
 
         # Reset visited and previous pointer before running algorithm
+        vertex = self.vertecies[startVertexName]
+        vertex.distance = distance = weight = 0
+        previous_node = None
+
         start_node = self.vertecies[startVertexName]
         start_node.g = start_node.h = start_node.f = 0
+
         end_node = self.vertecies[targetVertexName]
         end_node.g = end_node.h = end_node.f = 0
 
-        # Initialize both open and closed list
+        # Initialize both open and closed list as PriorityQueue
+        from queue import PriorityQueue
         open_list = []
         closed_list = []
 
         # Add the start node
         open_list.append(start_node)
 
-        # Loop until you find the end
+        #
+        # Create priority queue, priority = current weight on edge ...
+        # No duplicate edges in queue allowed
+        #
+        edge = Edge(0, start_node)
+        priqueue = PriorityQueue()
+
+        # Defines enqueue/dequeue methods on priqueue
+        def enqueue(data):
+            priqueue.put(data)
+
+        def dequeue():
+            return priqueue.get()
+
+        enqueue(edge)
+
+        # Loop until you find the end, while the openList is not empty
         while len(open_list) > 0:
-            # Get the current node
+
+            # Get the current node,
             eyeball = open_list[0]
             eyeball_index = 0
             self.pygameState(eyeball, self.GREEN)
             self.pygameState(start_node, self.BLUE)
             self.pygameState(end_node, self.RED)
 
+            # let the currentNode equal the node with the least f value
             for index, item in enumerate(open_list):
                 if item.f < eyeball.f:
                     eyeball = item
                     eyeball_index = index
 
+            # If not visited previously, we need to define the distance
+            if not eyeball.known:
+                eyeball.distance = distance
+                eyeball.previous = previous_node
+            eyeball.known = True
+
+            # remove the currentNode from the openList
+            # add the currentNode to the closedList
             # Pop current off open list, add to closed list
             open_list.pop(eyeball_index)
             closed_list.append(eyeball)
 
             # Found the goal
+            # if currentNode is the goal
             if eyeball == end_node:
-                path = []
-                current = eyeball
-                while current is not None:
-                    path.append(current.position)
-                    current = current.parent
-                return path[::-1]  # Return reversed path
+                break
 
             # Generate children
-            children = []
-            for adjecentedge in eyeball.adjecent:  # Adjacent squares
-                # Get node position
-                node_position = (eyeball.position[0] + adjecentedge[0], eyeball.position[1] + adjecentedge[1])
-
-                # Create new node
-                new_node = Vertex(start_node, node_position)
-
-                # Append
-                children.append(new_node)
+            # If the vertex pointed to by the edge has an adjecency list, we need to iterate on it
+            for adjecentedge in eyeball.adjecent:
+                if not adjecentedge.vertex.known:
+                    adjecentedge.vertex.distance = eyeball.distance + adjecentedge.weight
+                    adjecentedge.vertex.previous = eyeball
+                    adjecentedge.vertex.known = True
+                    enqueue(adjecentedge)
+                    self.pygameState(adjecentedge.vertex, self.PINK)
 
             # Loop through children
-            for child in children:
+            for adjecentedge in eyeball.adjecent:
                 # Child is on the closed list
                 for closed_child in closed_list:
-                    if child == closed_child:
+                    if eyeball == closed_child:
                         continue
 
                 # Create the f, g, and h values
-                child.g = eyeball.g + (child.distance - eyeball.distance)
-                child.h = self.heuristics(start_node, end_node)
-                child.f = child.g + child.h
+                adjecentedge.vertex.g = eyeball.g + 1
+                adjecentedge.vertex.h = self.heuristics(adjecentedge.vertex.name, end_node.name)
+                adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
 
                 # Child is already in the open list
                 for open_node in open_list:
-                    if child == open_node and child.g > open_node.g:
+                    if adjecentedge.vertex == open_node and adjecentedge.vertex.g > open_node.g:
                         continue
 
                 # Add the child to the open list
-                open_list.append(child)
+                open_list.append(adjecentedge.vertex)
 
             self.pygameState(eyeball, self.LIGHTGREY)
         for n in self.getPath(startVertexName, targetVertexName):
@@ -359,7 +385,7 @@ class AStar(Graph):
         return self.getPath(startVertexName, targetVertexName)
 
 
-astar = AStar(delay=1, visual=True)
+astar = AStar(delay=0.01, visual=True)
 
 # astar.readFile('minigraf.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
