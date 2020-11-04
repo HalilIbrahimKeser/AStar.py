@@ -274,124 +274,103 @@ class AStar(Graph):
     ###############################################################################
     '''
 
+    """
+    #################################################
+    #
+    # Karaktersatt Obligatorisk Oppgave #2, A* Pathfinding
+    #
+    # Halil Ibrahim Keser
+    #
+    # 
+    # Kode dokumentasjon er skrevet i selve koden som kommentarer.
+    #
+    # Implementasjon ide og pseudo kode er hentet fra to nettsider:
+    #
+    # http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
+    # https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
+    #
+    ##################################################
+    """
     def AStarSearch(self, startVertexName=None, targetVertexName=None):
-        self.initPygame()
+        """Returns vertex objects as a path from the given start to the given end in the given graph"""
 
-        # Check to see that startvertex is in Grap
+        """
+        The Initialization part
+        """
+        self.initPygame()  # initialize the game
+
+        # Check to see that startvertex is in Grap.....................................................
         if startVertexName not in self.vertecies:
             raise KeyError("Start node not present in graph")
 
-        # Reset visited and previous pointer before running algorithm
+        # Reset visited and previous pointer before running algorithm..................................
+        # Create start and end node as on Dijkstras funskjon
         vertex = self.vertecies[startVertexName]
-        vertex.distance = distance = weight = 0
-        previous_node = None
-
+        vertex.distance = 0
         start_node = self.vertecies[startVertexName]
-        start_node.g = start_node.h = start_node.f = 0
+        toNode = self.vertecies[targetVertexName]
 
-        end_node = self.vertecies[targetVertexName]
-        end_node.g = end_node.h = end_node.f = 0
-
-        # Initialize both open and closed list.
-        # Open_list as PriorityQueue for faster iteration og Big data
+        # Initialize open list, no need for closed list..................................................
+        # Open_list as PriorityQueue for faster iteration of Big data
         from queue import PriorityQueue
+        edge = Edge(0, vertex)  # Initialize the Edge with 0 weight
         open_list = PriorityQueue()
-        closed_list = []
-
-        def enqueue_open_list(data):
-            open_list.put(data)
-
-        def dequeue_open_list():
-            return open_list.get()
 
         # Add the start node
-        enqueue_open_list(start_node)
-        # open_list.append(start_node)
+        open_list.put((edge.vertex.g, edge.vertex))
 
-        # Create priority queue, priority = current weight on edge
-        # No duplicate edges in queue allowed
-        edge = Edge(0, start_node)
-        priqueue = PriorityQueue()
-
-        # Defines enqueue/dequeue methods on priqueue
-        def enqueue(data):
-            priqueue.put(data)
-
-        def dequeue():
-            return priqueue.get()
-        enqueue(edge)
-
-        # Loop until you find the end, while the openList is not empty
-        # while len(open_list) > 0:
+        """
+        The looping part, main part
+        """
+        # Loop until you find the end....................................................................
         while not open_list.empty():
 
-            # Get the current node,
-            eyeball = dequeue_open_list()
-            eyeball_index = eyeball.vertex
+            # Get the current node, current node here is the eyeball..................
+            edge = open_list.get()
+
+            # Get the current index from edge, it is the first index of edge
+            eyeball = edge[1]
+
+            # Update the colours of eyeball, startnode and endnode...................
             self.pygameState(eyeball, self.GREEN)
             self.pygameState(start_node, self.BLUE)
-            self.pygameState(end_node, self.RED)
+            self.pygameState(toNode, self.RED)
 
-            # let the currentNode equal the node with the least f value
-            # for item in open_list:
-            index = 0
-            while not open_list.empty():
-                next_item = open_list.get()
-                if next_item.f < eyeball.f:
-                    eyeball = next_item
-                    index += 1
-                    eyeball_index = index
-
-            # If not visited previously, we need to define the distance
-            if not eyeball.known:
-                eyeball.distance = distance
-                eyeball.previous = previous_node
+            # Found the goal!.........................................................
+            # if currentNode (eyeball) is the goal,
+            # continue and make the eyeball.known as True
+            # The path will be created later at the button. We have a function for it.
+            if eyeball == toNode:
+                break
             eyeball.known = True
 
-            # remove the currentNode from the openList
-            # add the currentNode to the closedList
-            # Pop current off open list, add to closed list
-                # enqueue_open_list(eyeball_index)
-            # open_list.pop(eyeball_index)
-            closed_list.append(eyeball)
-
-            # Found the goal
-            # if currentNode is the goal
-            if eyeball == end_node:
-                break
-
-            # Generate children
-            # If the vertex pointed to by the edge has an adjecency list, we need to iterate on it
-            for adjecentedge in eyeball.adjecent:
-                if not adjecentedge.vertex.known:
-                    adjecentedge.vertex.distance = eyeball.distance + adjecentedge.weight
-                    adjecentedge.vertex.previous = eyeball
-                    adjecentedge.vertex.known = True
-                    enqueue(adjecentedge)
-                    self.pygameState(adjecentedge.vertex, self.PINK)
-
+            # Generate children. The children is the adjacents of the node ...........
+            # If the vertex pointed to by the edge has an adjacent list,
+            # we need to iterate on it
             # Loop through children
             for adjecentedge in eyeball.adjecent:
-                # Child is on the closed list
-                for closed_child in closed_list:
-                    if eyeball == closed_child:
-                        continue
+                # Loop through those we have not been through, and not known
+                if not adjecentedge.vertex.known:
+                    # Initialize the previous children
+                    adjecentedge.vertex.previous = eyeball
 
-                # Create the f, g, and h values
-                adjecentedge.vertex.g = eyeball.g + 1
-                adjecentedge.vertex.h = self.heuristics(adjecentedge.vertex.name, end_node.name)
-                adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
+                    # Create the f, g, and h values
+                    # We have a function for heuristics. We will use it to update vertex.h
+                    adjecentedge.vertex.g = eyeball.g + adjecentedge.weight
+                    adjecentedge.vertex.h = self.heuristics(adjecentedge.vertex.name, toNode.name)
+                    adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
 
-                # Child is already in the open list
-                for open_node in open_list.queue:
-                    if adjecentedge.vertex == open_node and adjecentedge.vertex.g > open_node.g:
-                        continue
+                    open_list.put((adjecentedge.vertex.f, adjecentedge.vertex))
+                    adjecentedge.vertex.known = True
+                    # Update the colours of known children.............................
+                    self.pygameState(adjecentedge.vertex, self.PINK)
 
-                # Add the child to the open list
-                enqueue_open_list(adjecentedge.vertex)
-                # open_list.append(adjecentedge.vertex)
-
+            # Update the colours of known vertexes.....................................
             self.pygameState(eyeball, self.LIGHTGREY)
+
+        # Get the path and, update the colours for path.....................................................
+        # Return reversed path.
+        # We will use the getPath function from the Graph class
         for n in self.getPath(startVertexName, targetVertexName):
             self.pygameState(n, self.DARKGREEN)
         return self.getPath(startVertexName, targetVertexName)
@@ -401,12 +380,12 @@ astar = AStar(delay=0, visual=True)
 
 # astar.readFile('minigraf.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('minigraf_xtras.txt')
-astar.readFile('astjernegraf.txt')
-startVertexName, targetVertexName, removed = astar.readLimitations('xtras.txt')
+# astar.readFile('astjernegraf.txt')
+# startVertexName, targetVertexName, removed = astar.readLimitations('xtras.txt')
 # astar.readFile('biggraph.txt')
 # startVertexName, targetVertexName, removed = astar.readLimitations('biggraph_xtras.txt')
-# astar.readFile('AStarObligGraf.txt')
-# startVertexName, targetVertexName, removed = astar.readLimitations('AStarObligGraf_xtras.txt')
+astar.readFile('AStarObligGraf.txt')
+startVertexName, targetVertexName, removed = astar.readLimitations('AStarObligGraf_xtras.txt')
 
 # astar.Dijkstra(startVertexName, targetVertexName)
 astar.AStarSearch(startVertexName, targetVertexName)
