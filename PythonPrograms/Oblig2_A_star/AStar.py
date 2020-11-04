@@ -282,9 +282,10 @@ class AStar(Graph):
     # Halil Ibrahim Keser
     #
     # 
+    # DOKUMENTASJON:
     # Kode dokumentasjon er skrevet i selve koden som kommentarer.
     #
-    # Implementasjon ide og pseudo kode er hentet fra to nettsider:
+    # Implementasjons ide og pseudo kode er hentet fra to nettsider:
     #
     # http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
     # https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
