@@ -285,7 +285,9 @@ class AStar(Graph):
     # DOKUMENTASJON:
     # Kode dokumentasjon er skrevet i selve koden som kommentarer.
     #
-    # Implementasjons ide og pseudo kode er hentet fra to nettsider:
+    # Denne koden bruker mindre noder enn i fasiten. Og finner en kortere vei.
+    #
+    # Implementasjons ide og pseudo kode er hentet fra to nettsider + forelesning:
     #
     # http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
     # https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
@@ -316,6 +318,13 @@ class AStar(Graph):
         from queue import PriorityQueue
         edge = Edge(0, vertex)  # Initialize the Edge with 0 weight
         open_list = PriorityQueue()
+        closed_list = []
+
+        def enqueue_open_list(data):
+            open_list.put(data)
+
+        def dequeue_open_list():
+            return open_list.get()
 
         # Add the start node
         open_list.put((edge.vertex.g, edge.vertex))
@@ -327,9 +336,12 @@ class AStar(Graph):
         while not open_list.empty():
 
             # Get the current node, current node here is the eyeball..................
-            edge = open_list.get()
+            # Removing current from open list
+            edge = dequeue_open_list()
 
             # Get the current index from edge, it is the first index of edge
+            # current node that getting treated now
+            # it contains edges of the current node.
             eyeball = edge[1]
 
             # Update the colours of eyeball, startnode and endnode...................
@@ -344,6 +356,7 @@ class AStar(Graph):
             if eyeball == toNode:
                 break
             eyeball.known = True
+            closed_list.append(eyeball)
 
             # Generate children. The children is the adjacents of the node ...........
             # If the vertex pointed to by the edge has an adjacent list,
@@ -351,20 +364,38 @@ class AStar(Graph):
             # Loop through children
             for adjecentedge in eyeball.adjecent:
                 # Loop through those we have not been through, and not known
-                if not adjecentedge.vertex.known:
-                    # Initialize the previous children
-                    adjecentedge.vertex.previous = eyeball
+                if not adjecentedge.vertex.known:  # not known, not in open list
 
-                    # Create the f, g, and h values
-                    # We have a function for heuristics. We will use it to update vertex.h
-                    adjecentedge.vertex.g = eyeball.g + adjecentedge.weight
-                    adjecentedge.vertex.h = self.heuristics(adjecentedge.vertex.name, toNode.name)
-                    adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
+                    if adjecentedge.vertex not in closed_list:  # not in closed_list
+                        # Initialize the previous children
+                        adjecentedge.vertex.previous = eyeball
 
-                    open_list.put((adjecentedge.vertex.f, adjecentedge.vertex))
-                    adjecentedge.vertex.known = True
-                    # Update the colours of known children.............................
-                    self.pygameState(adjecentedge.vertex, self.PINK)
+                        # Create the f, g, and h values
+                        # A - algorithm: F(n) = G(n) + H(n)
+                        # We have a function for heuristics. We will use it to update vertex.h
+                        adjecentedge.vertex.g = eyeball.g + adjecentedge.weight
+                        adjecentedge.vertex.h = self.heuristics(adjecentedge.vertex.name, toNode.name)
+                        adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
+
+                        # Add the edge.node to open list as tuple
+                        open_list.put((adjecentedge.vertex.f, adjecentedge.vertex))
+                        adjecentedge.vertex.known = True
+
+                        # Update the colours of known children.............................
+                        self.pygameState(adjecentedge.vertex, self.PINK)
+
+                    else:
+                        # Update
+                        # If edge.node weight greater than current.node weight + edge.node weight
+                        if adjecentedge.vertex.g > (eyeball.g + adjecentedge.weight):
+                            adjecentedge.vertex.previous = eyeball
+                            adjecentedge.vertex.g = eyeball.g + adjecentedge.weight
+                            adjecentedge.vertex.f = adjecentedge.vertex.g + adjecentedge.vertex.h
+                        # Back-propagation
+                        if not adjecentedge.vertex.known:
+                            if adjecentedge.vertex in closed_list:
+                                closed_list.remove(adjecentedge.vertex)
+                                open_list.put((adjecentedge.vertex.f, adjecentedge.vertex))
 
             # Update the colours of known vertexes.....................................
             self.pygameState(eyeball, self.LIGHTGREY)
